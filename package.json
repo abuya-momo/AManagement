@@ -1,0 +1,14 @@
+{
+  "name": "bleshoes_server",
+  "version": "1.0.0",
+  "description": "The server side of bleshoes project",
+  "entory point": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "pzh",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
