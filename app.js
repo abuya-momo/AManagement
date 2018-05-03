@@ -7,6 +7,25 @@ app.get('/', function (req, res) {
   res.send('Hello World2333!hhh');
 });
 
+// 后台管理 ----------------------------------------------------------------------
+
+// 设备类型
+app.get('/app/device_types', function (req, res) {
+  res.send('device_type list');
+});
+
+app.post('/app/device_types', function (req, res) {
+  res.send('device_type list');
+});
+
+app.get('/app/device_types', function (req, res) {
+  res.send('device_type list');
+});
+
+app.get('/app/device_types', function (req, res) {
+  res.send('device_type list');
+});
+
 var server = app.listen(3001, function () {
   var host = server.address().address;
   var port = server.address().port;
