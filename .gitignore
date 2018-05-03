@@ -1,1 +1,7 @@
 node_modules
+
+public/manage/node_modules
+
+public/manage/coverage
+
+public/manage/build

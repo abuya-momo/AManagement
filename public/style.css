@@ -1,0 +1,20 @@
+.abc {
+	position: relative;
+	width: 360px;
+	height: 360px;
+	margin: 0 auto;
+	background-color: lime;
+}
+
+/*居中方法一*/
+.opq {
+	position: absolute;
+	top: 0; left: 0; bottom: 0; right: 0;
+	width: 200px;
+	height: 200px;
+	margin: auto;
+	/*overflow: auto;*/
+
+	background: orange;
+	opacity: 0.8;
+}
