@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 // var upload = multer();
 
 var router_manage = require('./router/manage');
+var router_app_api = require('./router/app_api');
 
 // use --------------------------------------------------------------------------
 app.use(express.static('public'));
@@ -13,30 +14,12 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 // app.use(multer()); // for parsing multipart/form-data
 
-// database ---------------------------------------------------------------------
-var mysql = require('mysql');
-var connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'pzh',
-  password : 'aco16532',
-  database : 'shoes'
-});
-
-connection.connect();
-
-connection.query('SELECT * from device', function(err, rows, fields) {
-  if (err) throw err;
-  console.log('The solution is: ', rows[0]);
-});
-
-connection.end();
-
-// router -------------------------------------------------------------------------
+// router -----------------------------------------------------------------------
 app.get('/', function (req, res) {
   res.send('Hello World2333!hhh');
 });
-
 router_manage(app);
+router_app_api(app);
 
 var server = app.listen(3001, function () {
   var host = server.address().address;
