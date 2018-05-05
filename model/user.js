@@ -16,13 +16,15 @@ User.prototype.searchUserByMiID = function (mi_id, callback) {
       if (error) {
         return error;
       }
-      
+
       if (results.length > 0) {
         callback(results[0]['id']);
       }
       else {
         callback(-1);
       }
+
+      connection.release();
     });
   });
 };
