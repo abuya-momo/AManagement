@@ -23,7 +23,7 @@ const menuData = [
     ],
   },
   {
-    name: '设备管理',
+    name: '表单',
     icon: 'form',
     path: 'form',
     children: [
@@ -43,7 +43,7 @@ const menuData = [
     ],
   },
   {
-    name: '广告管理',
+    name: '列表',
     icon: 'table',
     path: 'list',
     children: [
@@ -80,7 +80,7 @@ const menuData = [
     ],
   },
   {
-    name: '管理员管理',
+    name: '详情页',
     icon: 'profile',
     path: 'profile',
     authority: 'admin',
@@ -93,6 +93,59 @@ const menuData = [
         name: '高级详情页',
         path: 'advanced',
         authority: 'admin',
+      },
+    ],
+  },
+  {
+    name: '设备管理',
+    icon: 'calculator',
+    path: 'device',
+    children: [
+      {
+        name: '设备类型列表',
+        path: 'table-list',
+      },
+      {
+        name: '添加设备类型',
+        path: 'basic-form',
+      },
+      {
+        name: '设备信息查询',
+        path: 'table-list',
+      },
+      {
+        name: '用户设备查询',
+        path: 'table-list',
+      },
+    ],
+  },
+  {
+    name: '广告管理',
+    icon: 'picture',
+    path: 'ad',
+    children: [
+      {
+        name: '广告列表',
+        path: 'basic-list',
+      },
+      {
+        name: '发布广告',
+        path: 'basic-form',
+      },
+    ],
+  },
+  {
+    name: '管理员管理',
+    icon: 'user',
+    path: 'manager',
+    children: [
+      {
+        name: '管理员列表',
+        path: 'table-list',
+      },
+      {
+        name: '添加管理员',
+        path: 'basic-form',
       },
     ],
   },

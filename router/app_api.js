@@ -18,6 +18,8 @@ module.exports = function (app) {
   app.get('/app_api/get_device_list', device.get_device_list);
   // 应用端 - 设备 - 解除绑定
   app.post('/app_api/unbind_device', device.unbind_device);
-  // 应用端 - 设备 - 查看型号详情
+  // 应用端 - 设备 - 查看设备详情
   app.get('/app_api/device', device.get_device);
+
+
 }

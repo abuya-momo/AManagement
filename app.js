@@ -1,12 +1,15 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+
 // var multer = require('multer');
 // var upload = multer({ dest: 'uploads/' });
 // var upload = multer();
 
-var router_manage = require('./router/manage');
+var router_manage = require('./router/manage_api');
 var router_app_api = require('./router/app_api');
+
+var moment = require('moment');
 
 // use --------------------------------------------------------------------------
 app.use(express.static('public'));
@@ -15,6 +18,12 @@ app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x
 // app.use(multer()); // for parsing multipart/form-data
 
 // router -----------------------------------------------------------------------
+app.use(function (req, res, next) {
+  console.log("router>>>>>>>>>>>>>>>>>>>>>>>>>");
+  console.log(req.url, 'Time: ', moment().format('YYYY-MM-DD HH:mm:ss'));
+  next();
+});
+
 app.get('/', function (req, res) {
   res.send('Hello World2333!hhh');
 });
