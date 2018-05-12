@@ -103,19 +103,19 @@ const menuData = [
     children: [
       {
         name: '设备类型列表',
-        path: 'table-list',
+        path: 'device-type-list',
       },
       {
         name: '添加设备类型',
-        path: 'basic-form',
+        path: 'add-device-type',
       },
       {
         name: '设备信息查询',
-        path: 'table-list',
+        path: 'search-devices',
       },
       {
         name: '用户设备查询',
-        path: 'table-list',
+        path: 'search-user',
       },
     ],
   },
