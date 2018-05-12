@@ -6,7 +6,7 @@ function Device (id, device_type, count, start_time, mac, state) {
 
 }
 
-// 绑定设备
+// 绑定设备[U, C]
 Device.prototype.bindDeviceAndUser = function (deviceId, userId, callback) {
   pool.getConnection(function (err, connection) {
     connection.connect();
@@ -57,7 +57,7 @@ Device.prototype.bindDeviceAndUser = function (deviceId, userId, callback) {
   });
 };
 
-// 根据序列号查找设备id以及绑定状态，如果没有返回-1
+// 根据序列号查找设备id以及绑定状态，如果没有返回-1[R]
 Device.prototype.findDeviceIdByIdentifierNumber = function (identifierNumber, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -81,7 +81,7 @@ Device.prototype.findDeviceIdByIdentifierNumber = function (identifierNumber, ca
   });
 };
 
-// 设备入网
+// 设备入网[C]
 Device.prototype.initDevice = function (identifierNumber, mac, deviceTypeId, startTime, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -103,7 +103,7 @@ Device.prototype.initDevice = function (identifierNumber, mac, deviceTypeId, sta
   });
 };
 
-// 根据型号查询型号id，如果没有找到则返回-1
+// 根据型号查询型号id，如果没有找到则返回-1[R]
 Device.prototype.findDeviceTypeIdByModel = function (model, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -127,7 +127,7 @@ Device.prototype.findDeviceTypeIdByModel = function (model, callback) {
   });
 };
 
-// 获取设备列表
+// 获取设备列表[RL]
 Device.prototype.getDeviceList = function (userId, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -158,7 +158,7 @@ Device.prototype.getDeviceList = function (userId, callback) {
   });
 };
 
-// 解除绑定
+// 解除绑定[U]
 Device.prototype.unbindDevice = function (userId, deviceId, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -207,7 +207,7 @@ Device.prototype.unbindDevice = function (userId, deviceId, callback) {
   });
 };
 
-// 获取设备详情
+// 获取设备详情[R]
 Device.prototype.getDevice = function (id, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
