@@ -174,7 +174,7 @@ export const getRouterData = app => {
     // },
 
     '/device/device-type-list': {
-      component: dynamicWrapper(app, [], () => import('../routes/Device/DeviceTypeList')),
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/DeviceTypeList')),
     },
     '/device/device-type/:id': {
       component: dynamicWrapper(app, [], () => import('../routes/Device/DeviceType')),

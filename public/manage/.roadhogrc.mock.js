@@ -137,4 +137,9 @@ const proxy = {
   },
 };
 
-export default (noProxy ? {} : delay(proxy, 1000));
+// export default (noProxy ? {} : delay(proxy, 1000));
+
+export default {
+  'GET /manage/(.*)': 'http://localhost:3001/manage',
+  'GET /app_api/(.*)': 'http://localhost:3001/app_api',
+};

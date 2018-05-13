@@ -30,55 +30,27 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['关闭', '运行中', '已上线', '异常'];
 
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible } = props;
-  const okHandle = () => {
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-      form.resetFields();
-      handleAdd(fieldsValue);
-    });
-  };
-  return (
-    <Modal
-      title="新建规则"
-      visible={modalVisible}
-      onOk={okHandle}
-      onCancel={() => handleModalVisible()}
-    >
-      <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="描述">
-        {form.getFieldDecorator('desc', {
-          rules: [{ required: true, message: 'Please input some description...' }],
-        })(<Input placeholder="请输入" />)}
-      </FormItem>
-    </Modal>
-  );
-});
-
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ deviceType, loading }) => ({
+  deviceType,
+  loading: loading.models.deviceType,
 }))
 @Form.create()
+
 export default class TableList extends PureComponent {
   state = {
-    modalVisible: false,
-    formValues: {},
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'rule/fetch',
+      type: 'deviceType/fetchDeviceTypes',
     });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
+    console.log("Test233333 handleStandardTableChange");
     const { dispatch } = this.props;
-    const { formValues } = this.state;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
       const newObj = { ...obj };
@@ -89,117 +61,73 @@ export default class TableList extends PureComponent {
     const params = {
       currentPage: pagination.current,
       pageSize: pagination.pageSize,
-      ...formValues,
       ...filters,
     };
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
 
+    console.log('ghjkl;');
+
     dispatch({
-      type: 'rule/fetch',
-      payload: params,
-    });
-  };
-
-  handleMenuClick = e => {
-    const { dispatch } = this.props;
-
-    switch (e.key) {
-      case 'remove':
-        // dispatch({
-        //   type: 'rule/remove',
-        //   payload: {
-        //     no: selectedRows.map(row => row.no).join(','),
-        //   },
-        //   callback: () => {
-        //     this.setState({
-        //       selectedRows: [],
-        //     });
-        //   },
-        // });
-        break;
-      default:
-        break;
-    }
-  };
-
-  handleModalVisible = flag => {
-    this.setState({
-      modalVisible: !!flag,
-    });
-  };
-
-  handleAdd = fields => {
-    this.props.dispatch({
-      type: 'rule/add',
-      payload: {
-        description: fields.desc,
-      },
-    });
-
-    message.success('添加成功');
-    this.setState({
-      modalVisible: false,
+      type: 'deviceType/fetchDeviceTypes',
     });
   };
 
   render() {
-    const { rule: { data }, loading } = this.props;
-    const { modalVisible } = this.state;
+    console.log('prop ' + this.props);
+    const { deviceType: { deviceTypeList }, loading } = this.props;
+
+    console.log(deviceTypeList);
+    let data = {
+      list: deviceTypeList,
+      pagination: {
+        total: 1,
+        pageSize: deviceTypeList.length,
+        current: 1
+      }
+    }
 
     const columns = [
       {
         title: '型号编号',
-        dataIndex: 'no',
+        dataIndex: 'id',
       },
       {
         title: '型号',
-        dataIndex: 'description',
+        dataIndex: 'model',
       },
       {
         title: '型号名称',
-        dataIndex: 'callNo',
+        dataIndex: 'type_name',
       },
       {
         title: '上市时间',
-        dataIndex: 'updatedAt',
+        dataIndex: 'start_sell_time',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '操作',
-        render: () => (
+        render: (currentRecord) => {
+          return (
           <Fragment>
-            <a href="">修改</a>
+            <a href={`/#/device/device-type/${currentRecord.id}`}>修改</a>
           </Fragment>
-        ),
+        )},
       },
     ];
-
-    const menu = (
-      <Menu onClick={this.handleMenuClick}>
-        <Menu.Item key="remove">删除</Menu.Item>
-        <Menu.Item key="approval">批量审批</Menu.Item>
-      </Menu>
-    );
-
-    const parentMethods = {
-      handleAdd: this.handleAdd,
-      handleModalVisible: this.handleModalVisible,
-    };
 
     return (
       <PageHeaderLayout title="设备类型">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button icon="plus" type="primary" onClick={() => {}}>
                 新建
               </Button>
             </div>
             <StandardTableA
-              selectedRows={[]}
               loading={loading}
               data={data}
               columns={columns}
@@ -207,7 +135,6 @@ export default class TableList extends PureComponent {
             />
           </div>
         </Card>
-        <CreateForm {...parentMethods} modalVisible={modalVisible} />
       </PageHeaderLayout>
     );
   }
