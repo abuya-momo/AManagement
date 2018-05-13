@@ -70,6 +70,14 @@ module.exports.get_device_list = function (req, res) {
 
   var userId = req.query.userId;
 
+  if (!userId) {
+    res.json({
+      deviceList: [],
+      error: "no param of userId"
+    });
+    return;
+  }
+
   var device = new Device();
   device.getDeviceList(userId, function (error, deviceList) {
     if (error) {

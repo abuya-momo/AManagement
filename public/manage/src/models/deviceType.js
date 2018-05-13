@@ -1,40 +1,45 @@
-import { queryFakeList } from '../services/api';
+import {
+  queryDeviceTypes,
+  queryDeviceType,
+} from '../services/deviceType';
 
 export default {
-  namespace: 'list',
+  namespace: 'deviceType',
 
   state: {
-    list: [],
+    deviceTypeList: [],
+    deviceType: {}
   },
 
   effects: {
-    *fetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+    *fetchDeviceTypes(_, { call, put }) {
+      const response = yield call(queryDeviceTypes);
+      let deviceTypes = response.deviceTypes;
       yield put({
-        type: 'queryList',
-        payload: Array.isArray(response) ? response : [],
+        type: 'saveDeviceTypes',
+        payload: ((deviceTypes && Array.isArray(deviceTypes)) ? deviceTypes : [])
       });
     },
-    *appendFetch({ payload }, { call, put }) {
-      const response = yield call(queryFakeList, payload);
+    *fetchDeviceType({ payload }, { call, put }) {
+      const response = yield call(queryDeviceType, payload);
       yield put({
-        type: 'appendList',
+        type: 'saveDeviceType',
         payload: Array.isArray(response) ? response : [],
       });
     },
   },
 
   reducers: {
-    queryList(state, action) {
+    saveDeviceTypes(state, action) {
       return {
         ...state,
-        list: action.payload,
+        deviceTypeList: action.payload,
       };
     },
-    appendList(state, action) {
+    saveDeviceType(state, action) {
       return {
         ...state,
-        list: state.list.concat(action.payload),
+        deviceType: action.payload,
       };
     },
   },
