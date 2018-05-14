@@ -177,13 +177,13 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/DeviceTypeList')),
     },
     '/device/device-type/:id': {
-      component: dynamicWrapper(app, [], () => import('../routes/Device/DeviceType')),
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/DeviceType')),
     },
     '/device/add-device-type': {
-      component: dynamicWrapper(app, [], () => import('../routes/Device/AddDeviceType')),
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/AddDeviceType')),
     },
     '/device/edit-device-type/:id': {
-      component: dynamicWrapper(app, [], () => import('../routes/Device/EditDeviceType')),
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/EditDeviceType')),
     },
     '/device/search-devices': {
       component: dynamicWrapper(app, [], () => import('../routes/Device/SearchDevices')),

@@ -11,8 +11,11 @@ import {
   Radio,
   Icon,
   Tooltip,
+  Upload,
+  Modal,
 } from 'antd';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import PicturesWall from '../../components/PicturesWall';
 import styles from './style.less';
 
 const FormItem = Form.Item;
@@ -21,16 +24,20 @@ const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 @connect(({ loading }) => ({
-  submitting: loading.effects['form/submitRegularForm'],
+  submitting: loading.effects['deviceType/submitEditDeviceType'],// loading.effects是对应函数的返回值
+  loading: loading.effects['deviceType/fetchDeviceType']
 }))
-@Form.create()
-export default class BasicForms extends PureComponent {
+@Form.create() // 创建form对象到props
+export default class EditDeviceType extends PureComponent {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
+      console.log('validateFieldsAndScroll Test');
+      console.log(values);
       if (!err) {
+        console.log('validateFieldsAndScroll dispatch');
         this.props.dispatch({
-          type: 'form/submitRegularForm',
+          type: 'deviceType/submitAddDeviceType',
           payload: values,
         });
       }
@@ -42,11 +49,11 @@ export default class BasicForms extends PureComponent {
 
     const formItemLayout = {
       labelCol: {
-        xs: { span: 24 },
+        xs: { span: 20 },
         sm: { span: 7 },
       },
       wrapperCol: {
-        xs: { span: 24 },
+        xs: { span: 20 },
         sm: { span: 12 },
         md: { span: 10 },
       },
@@ -54,139 +61,80 @@ export default class BasicForms extends PureComponent {
 
     const submitFormLayout = {
       wrapperCol: {
-        xs: { span: 24, offset: 0 },
+        xs: { span: 20, offset: 0 },
         sm: { span: 10, offset: 7 },
       },
     };
 
     return (
       <PageHeaderLayout
-        title="基础表单"
-        content="表单页用于向用户收集或验证信息，基础表单常见于数据项较少的表单场景。"
+        title="添加设备类型"
+        content=""
       >
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
-            <FormItem {...formItemLayout} label="标题">
-              {getFieldDecorator('title', {
+            <FormItem {...formItemLayout} label="型号">
+              {getFieldDecorator('model', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入标题',
+                    message: '请输入设备型号(英文)',
                   },
                 ],
-              })(<Input placeholder="给目标起个名字" />)}
+              })(<Input placeholder="请输入设备型号（英文）" />)}
             </FormItem>
-            <FormItem {...formItemLayout} label="起止日期">
-              {getFieldDecorator('date', {
+            <FormItem {...formItemLayout} label="宣传型号">
+              {getFieldDecorator('type_name', {
                 rules: [
                   {
                     required: true,
-                    message: '请选择起止日期',
+                    message: '请输入设备型号（中文,，宣传用，可重复）',
                   },
                 ],
-              })(<RangePicker style={{ width: '100%' }} placeholder={['开始日期', '结束日期']} />)}
+              })(<Input placeholder="请输入设备型号(中文，宣传用，可重复)" />)}
             </FormItem>
-            <FormItem {...formItemLayout} label="目标描述">
-              {getFieldDecorator('goal', {
+            <FormItem {...formItemLayout} label="上市时间">
+              {getFieldDecorator('start_sell_time', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入目标描述',
+                    message: '请选择上市时间',
+                  },
+                ],
+              })(<DatePicker style={{ width: '100%' }} placeholder={'请选择上市时间'} />)}
+            </FormItem>
+            <FormItem {...formItemLayout} label={
+              <span>
+                型号简介<em className={styles.optional}>（选填）</em>
+              </span>
+            }>
+              {getFieldDecorator('type_profile', {
+                rules: [
+                  {
+                    required: false,
+                    message: '请输入型号简介',
                   },
                 ],
               })(
                 <TextArea
                   style={{ minHeight: 32 }}
-                  placeholder="请输入你的阶段性工作目标"
+                  placeholder="请输入产品特性，系列特性等简介"
                   rows={4}
                 />
               )}
             </FormItem>
-            <FormItem {...formItemLayout} label="衡量标准">
-              {getFieldDecorator('standard', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入衡量标准',
-                  },
-                ],
-              })(<TextArea style={{ minHeight: 32 }} placeholder="请输入衡量标准" rows={4} />)}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  客户
-                  <em className={styles.optional}>
-                    （选填）
-                    <Tooltip title="目标的服务对象">
-                      <Icon type="info-circle-o" style={{ marginRight: 4 }} />
-                    </Tooltip>
-                  </em>
-                </span>
-              }
-            >
-              {getFieldDecorator('client')(
-                <Input placeholder="请描述你服务的客户，内部客户直接 @姓名／工号" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  邀评人<em className={styles.optional}>（选填）</em>
-                </span>
-              }
-            >
-              {getFieldDecorator('invites')(
-                <Input placeholder="请直接 @姓名／工号，最多可邀请 5 人" />
-              )}
-            </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label={
-                <span>
-                  权重<em className={styles.optional}>（选填）</em>
-                </span>
-              }
-            >
-              {getFieldDecorator('weight')(<InputNumber placeholder="请输入" min={0} max={100} />)}
-              <span>%</span>
-            </FormItem>
-            <FormItem {...formItemLayout} label="目标公开" help="客户、邀评人默认被分享">
-              <div>
-                {getFieldDecorator('public', {
-                  initialValue: '1',
-                })(
-                  <Radio.Group>
-                    <Radio value="1">公开</Radio>
-                    <Radio value="2">部分公开</Radio>
-                    <Radio value="3">不公开</Radio>
-                  </Radio.Group>
-                )}
-                <FormItem style={{ marginBottom: 0 }}>
-                  {getFieldDecorator('publicUsers')(
-                    <Select
-                      mode="multiple"
-                      placeholder="公开给"
-                      style={{
-                        margin: '8px 0',
-                        display: getFieldValue('public') === '2' ? 'block' : 'none',
-                      }}
-                    >
-                      <Option value="1">同事甲</Option>
-                      <Option value="2">同事乙</Option>
-                      <Option value="3">同事丙</Option>
-                    </Select>
-                  )}
-                </FormItem>
-              </div>
+            <FormItem {...formItemLayout} label={
+              <span>
+                型号图片<em className={styles.optional}>（选填）</em>
+              </span>
+            }>
+              <PicturesWall />
             </FormItem>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>
                 提交
               </Button>
-              <Button style={{ marginLeft: 8 }}>保存</Button>
+              <Button style={{ marginLeft: 8 }}>取消</Button>
             </FormItem>
           </Form>
         </Card>

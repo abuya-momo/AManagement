@@ -36,6 +36,7 @@ module.exports.add_device_type = function (req, res) {
   var deviceTypeParams = {
     model: req.body.model ? req.body.model : null,
     type_name: req.body.type_name ? req.body.type_name : null,
+    start_sell_time: req.body.start_sell_time ? req.body.start_sell_time : null,
     type_profile: req.body.type_profile ? req.body.type_profile : null,
     type_pic: req.body.type_pic ? req.body.type_pic : null,
   };
@@ -43,14 +44,14 @@ module.exports.add_device_type = function (req, res) {
   deviceType.addDeviceType(deviceTypeParams, function (error, success) {
     if (error) {
       res.json({
-        succcess: false,
+        success: false,
         message: error
       });
       return;
     }
 
     res.json({
-      succcess: success,
+      success: success,
       message: ""
     });
   });

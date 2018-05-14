@@ -141,5 +141,7 @@ const proxy = {
 
 export default {
   'GET /manage/(.*)': 'http://localhost:3001/manage',
+  'POST /manage/(.*)': 'http://localhost:3001/manage',
   'GET /app_api/(.*)': 'http://localhost:3001/app_api',
+  'POST /app_api/(.*)': 'http://localhost:3001/app_api',
 };

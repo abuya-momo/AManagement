@@ -64,11 +64,14 @@ DeviceType.prototype.addDeviceType = function (deviceType, callback) {
     }
 
     connection.connect();
+    console.log('deviceType.model: ' + deviceType.model);
+    console.log('deviceType.start_sell_time: ' + deviceType.start_sell_time);
     console.log('deviceType: ' + deviceType);
-    var sql = 'INSERT INTO device_type (model, type_name, type_profile, type_pic) VALUES (?, ?, ?, ?)';
+    console.log('deviceType: ' + deviceType);
+    var sql = 'INSERT INTO device_type (model, type_name, start_sell_time, type_profile, type_pic) VALUES (?, ?, ?, ?, ?)';
     connection.query(
       sql,
-      [deviceType.model, deviceType.type_name, deviceType.type_profile, deviceType.type_pic],
+      [deviceType.model, deviceType.type_name, deviceType.start_sell_time, deviceType.type_profile, deviceType.type_pic],
       function (error, results, fields) {
         if (error) {
           if (error.code == "ER_DUP_ENTRY") {

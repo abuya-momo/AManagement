@@ -33,7 +33,7 @@ const getValue = obj =>
 
 @connect(({ deviceType, loading }) => ({
   deviceType,
-  loading: loading.models.deviceType,
+  loading: loading.models.deviceTypeList,
 }))
 @Form.create()
 
@@ -101,7 +101,8 @@ export default class TableList extends PureComponent {
         title: '上市时间',
         dataIndex: 'start_sell_time',
         sorter: true,
-        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+        render: val => <span>{val}</span>,
       },
       {
         title: '操作',
