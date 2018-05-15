@@ -27,7 +27,7 @@ const { TextArea } = Input;
   submitting: loading.effects['deviceType/submitAddDeviceType'],// loading.effects是对应函数的返回值
 }))
 @Form.create() // 创建form对象到props
-export default class BasicForms extends PureComponent {
+export default class AddDeviceType extends PureComponent {
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {

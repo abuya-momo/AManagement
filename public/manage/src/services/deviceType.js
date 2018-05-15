@@ -5,8 +5,8 @@ export async function queryDeviceTypes() {
   return request('/manage/device_types');
 }
 
-export async function queryDeviceType(deviceTypeId) {
-  return request(`/manage/device_type?${stringify(deviceTypeId)}`);
+export async function queryDeviceType(id) {
+  return request(`/manage/device_type?id=${id}`);
 }
 
 export async function submitAdd(params) {

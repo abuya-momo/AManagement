@@ -1,5 +1,6 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import {
   Row,
@@ -31,25 +32,39 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-@connect(({ deviceType, loading }) => ({
-  deviceType,
-  loading: loading.models.deviceTypeList,
+@connect(({ deviceTypeList, loading }) => ({
+  deviceTypeList,
+  loading: loading.effects['deviceType/fetchDeviceTypes'],
 }))
 @Form.create()
-
-export default class TableList extends PureComponent {
+export default class DeviceTypeList extends Component {
   state = {
+    pagination: {
+      total: 0,
+      pageSize: 5,
+      current: 1
+    }
   };
 
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'deviceType/fetchDeviceTypes',
+      type: 'deviceTypeList/fetchDeviceTypes',
     });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
     console.log("Test233333 handleStandardTableChange");
+    console.log(pagination);
+
+    this.setState({
+      ...this.state,
+      pagination: {
+        ...this.state.pagination,
+        current: pagination.current,
+      }
+    });
+
     const { dispatch } = this.props;
 
     const filters = Object.keys(filtersArg).reduce((obj, key) => {
@@ -66,22 +81,17 @@ export default class TableList extends PureComponent {
     if (sorter.field) {
       params.sorter = `${sorter.field}_${sorter.order}`;
     }
-
-    dispatch({
-      type: 'deviceType/fetchDeviceTypes',
-    });
   };
 
   render() {
-    const { deviceType: { deviceTypeList }, loading } = this.props;
+    const { deviceTypeList: { list }, loading } = this.props;
 
     let data = {
-      list: deviceTypeList,
+      list: list,
       pagination: {
-        total: 1,
-        pageSize: deviceTypeList.length,
-        current: 1
-      }
+        ...this.state.pagination,
+        total: list ? list.length : 0,
+      },
     }
 
     const columns = [
@@ -101,15 +111,18 @@ export default class TableList extends PureComponent {
         title: '上市时间',
         dataIndex: 'start_sell_time',
         sorter: true,
-        // render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
-        render: val => <span>{val}</span>,
+        render: val => <span>{
+          moment(val).format('YYYY-MM-DD HH:mm:ss')
+        }</span>,
       },
       {
         title: '操作',
         render: (currentRecord) => {
           return (
           <Fragment>
-            <a href={`/#/device/device-type/${currentRecord.id}`}>修改</a>
+            <a href={`/#/device/device-type/${currentRecord.id}`}>详情</a>
+            <Divider type="vertical" />
+            <a href={`/#/device/edit-device-type/${currentRecord.id}`}>修改</a>
           </Fragment>
         )},
       },
@@ -120,7 +133,9 @@ export default class TableList extends PureComponent {
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => {}}>
+              <Button icon="plus" type="primary" onClick={() => {
+                this.props.dispatch(routerRedux.push('/device/add-device-type'));// 页面跳转
+              }}>
                 新建
               </Button>
             </div>

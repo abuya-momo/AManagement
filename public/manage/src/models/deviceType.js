@@ -10,8 +10,6 @@ export default {
   namespace: 'deviceType',
 
   state: {
-    deviceTypeList: [],
-    deviceType: {}
   },
 
   effects: {
@@ -24,10 +22,11 @@ export default {
       });
     },
     *fetchDeviceType({ payload }, { call, put }) {
+      console.log('fetchDeviceType' + payload);
       const response = yield call(queryDeviceType, payload);
       yield put({
         type: 'saveDeviceType',
-        payload: Array.isArray(response) ? response : [],
+        payload: response ? response.deviceType : {}
       });
     },
     *submitAddDeviceType({ payload }, { call, put }) {
@@ -64,7 +63,7 @@ export default {
     saveDeviceType(state, action) {
       return {
         ...state,
-        deviceType: action.payload,
+        ...action.payload,
       };
     },
   },
