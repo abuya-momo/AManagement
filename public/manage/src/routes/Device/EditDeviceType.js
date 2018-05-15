@@ -23,7 +23,8 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
+@connect(({ deviceType, loading }) => ({
+  deviceType: deviceType,
   submitting: loading.effects['deviceType/submitEditDeviceType'],// loading.effects是对应函数的返回值
   loading: loading.effects['deviceType/fetchDeviceType']
 }))
@@ -37,7 +38,7 @@ export default class EditDeviceType extends PureComponent {
       if (!err) {
         console.log('validateFieldsAndScroll dispatch');
         this.props.dispatch({
-          type: 'deviceType/submitAddDeviceType',
+          type: 'deviceType/submitEditDeviceType',
           payload: values,
         });
       }

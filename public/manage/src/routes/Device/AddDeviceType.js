@@ -19,8 +19,6 @@ import PicturesWall from '../../components/PicturesWall';
 import styles from './style.less';
 
 const FormItem = Form.Item;
-const { Option } = Select;
-const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
 @connect(({ loading }) => ({

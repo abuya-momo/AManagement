@@ -5,6 +5,7 @@ import {
   submitAdd
 } from '../services/deviceType';
 import { message } from 'antd';
+import moment from 'moment';
 
 export default {
   namespace: 'deviceType',
@@ -13,14 +14,6 @@ export default {
   },
 
   effects: {
-    *fetchDeviceTypes(_, { call, put }) {
-      const response = yield call(queryDeviceTypes);
-      let deviceTypes = response.deviceTypes;
-      yield put({
-        type: 'saveDeviceTypes',
-        payload: ((deviceTypes && Array.isArray(deviceTypes)) ? deviceTypes : []),
-      });
-    },
     *fetchDeviceType({ payload }, { call, put }) {
       console.log('fetchDeviceType' + payload);
       const response = yield call(queryDeviceType, payload);
@@ -54,13 +47,14 @@ export default {
   },
 
   reducers: {
-    saveDeviceTypes(state, action) {
-      return {
-        ...state,
-        deviceTypeList: action.payload,
-      };
-    },
     saveDeviceType(state, action) {
+      if (action.payload.start_sell_time) {
+        return {
+          ...state,
+          ...action.payload,
+          start_sell_time: moment(action.payload.start_sell_time).format('YYYY-MM-DD HH:mm:ss')
+        };
+      }
       return {
         ...state,
         ...action.payload,

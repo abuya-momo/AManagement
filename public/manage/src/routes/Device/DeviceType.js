@@ -7,39 +7,39 @@ import styles from './DeviceType.less';
 
 const { Description } = DescriptionList;
 
-const progressColumns = [
-  {
-    title: '时间',
-    dataIndex: 'time',
-    key: 'time',
-  },
-  {
-    title: '当前进度',
-    dataIndex: 'rate',
-    key: 'rate',
-  },
-  {
-    title: '状态',
-    dataIndex: 'status',
-    key: 'status',
-    render: text =>
-      text === 'success' ? (
-        <Badge status="success" text="成功" />
-      ) : (
-        <Badge status="processing" text="进行中" />
-      ),
-  },
-  {
-    title: '操作员ID',
-    dataIndex: 'operator',
-    key: 'operator',
-  },
-  {
-    title: '耗时',
-    dataIndex: 'cost',
-    key: 'cost',
-  },
-];
+// const progressColumns = [
+//   {
+//     title: '时间',
+//     dataIndex: 'time',
+//     key: 'time',
+//   },
+//   {
+//     title: '当前进度',
+//     dataIndex: 'rate',
+//     key: 'rate',
+//   },
+//   {
+//     title: '状态',
+//     dataIndex: 'status',
+//     key: 'status',
+//     render: text =>
+//       text === 'success' ? (
+//         <Badge status="success" text="成功" />
+//       ) : (
+//         <Badge status="processing" text="进行中" />
+//       ),
+//   },
+//   {
+//     title: '操作员ID',
+//     dataIndex: 'operator',
+//     key: 'operator',
+//   },
+//   {
+//     title: '耗时',
+//     dataIndex: 'cost',
+//     key: 'cost',
+//   },
+// ];
 
 @connect(({ deviceType, loading }) => ({
   deviceType,
@@ -61,6 +61,7 @@ export default class DeviceType extends Component {
 
   render() {
     const { deviceType, loading } = this.props;
+
     // const { basicGoods, basicProgress } = profile;
     // let goodsData = [];
     // if (basicGoods.length) {
@@ -150,51 +151,53 @@ export default class DeviceType extends Component {
 
     console.log(deviceType);
 
-    if (!deviceType) {
+    if (!deviceType.id) {
+      console.log('deviceType == {}');
       return (
         <PageHeaderLayout title="设备类型详情">
         </PageHeaderLayout>
       );
+    } else {
+      console.log('deviceType');
+      return (
+        <PageHeaderLayout title={`${deviceType.type_name}(${deviceType.model})`} content="设备类型详情">
+          <Card bordered={false}>
+            <DescriptionList size="large" title="型号信息" style={{ marginBottom: 32 }}>
+              <Description term="型号(英文)">{deviceType.model}</Description>
+              <Description term="型号(中文)">{deviceType.type_name}</Description>
+              <Description term="型号编号">{deviceType.id}</Description>
+              <Description term="上市时间">{deviceType.start_sell_time}</Description>
+            </DescriptionList>
+            <Divider style={{ marginBottom: 32 }} />
+            <DescriptionList size="large" title="型号简介" style={{ marginBottom: 32 }}>
+              <p>{deviceType.type_profile}</p>
+            </DescriptionList>
+            <Divider style={{ marginBottom: 32 }} />
+            <DescriptionList size="large" title="型号图片" style={{ marginBottom: 32 }}>
+            </DescriptionList>
+            {
+              // <Divider style={{ marginBottom: 32 }} />
+              // <div className={styles.title}>退货商品</div>
+              // <Table
+              //   style={{ marginBottom: 24 }}
+              //   pagination={false}
+              //   loading={loading}
+              //   dataSource={goodsData}
+              //   columns={goodsColumns}
+              //   rowKey="id"
+              // />
+              // <div className={styles.title}>退货进度</div>
+              // <Table
+              //   style={{ marginBottom: 16 }}
+              //   pagination={false}
+              //   loading={loading}
+              //   dataSource={basicProgress}
+              //   columns={progressColumns}
+              // />
+            }
+          </Card>
+        </PageHeaderLayout>
+      );
     }
-
-    return (
-      <PageHeaderLayout title={deviceType.type_name} content="设备类型详情">
-        <Card bordered={false}>
-          <DescriptionList size="large" title="型号信息" style={{ marginBottom: 32 }}>
-            <Description term="编号">{deviceType.id}</Description>
-            <Description term="型号">{deviceType.model}</Description>
-            <Description term="型号名称">{deviceType.type_name}</Description>
-            <Description term="上市时间">{deviceType.start_sell_time}</Description>
-          </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="型号简介" style={{ marginBottom: 32 }}>
-            {deviceType.type_profile}
-          </DescriptionList>
-          <Divider style={{ marginBottom: 32 }} />
-          <DescriptionList size="large" title="型号图片" style={{ marginBottom: 32 }}>
-          </DescriptionList>
-          {
-            // <Divider style={{ marginBottom: 32 }} />
-            // <div className={styles.title}>退货商品</div>
-            // <Table
-            //   style={{ marginBottom: 24 }}
-            //   pagination={false}
-            //   loading={loading}
-            //   dataSource={goodsData}
-            //   columns={goodsColumns}
-            //   rowKey="id"
-            // />
-            // <div className={styles.title}>退货进度</div>
-            // <Table
-            //   style={{ marginBottom: 16 }}
-            //   pagination={false}
-            //   loading={loading}
-            //   dataSource={basicProgress}
-            //   columns={progressColumns}
-            // />
-          }
-        </Card>
-      </PageHeaderLayout>
-    );
   }
 }
