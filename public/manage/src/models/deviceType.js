@@ -2,7 +2,8 @@ import { routerRedux } from 'dva/router';
 import {
   queryDeviceTypes,
   queryDeviceType,
-  submitAdd
+  submitAdd,
+  submitEdit
 } from '../services/deviceType';
 import { message } from 'antd';
 import moment from 'moment';
@@ -23,7 +24,7 @@ export default {
       });
     },
     *submitAddDeviceType({ payload }, { call, put }) {
-      payload.start_sell_time = payload.start_sell_time.format("YYYY-MM-DD hh:mm:ss");
+      payload.start_sell_time = payload.start_sell_time.format('YYYY-MM-DD hh:mm:ss');
       var response = yield call(submitAdd, payload);
       if (response.success) {
         message.success('提交成功');
@@ -35,7 +36,9 @@ export default {
     },
     *submitEditDeviceType({ payload }, { call, put }) {
       payload.start_sell_time = payload.start_sell_time.format("YYYY-MM-DD hh:mm:ss");
-      var response = yield call(submitAdd, payload);
+      console.log(payload);
+      var response = yield call(submitEdit, payload);
+      console.log(response);
       if (response.success) {
         message.success('提交成功');
         yield put(routerRedux.push(`/device/device-type/${payload.id}`));

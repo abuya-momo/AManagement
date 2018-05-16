@@ -1,5 +1,6 @@
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'dva';
+import moment from 'moment';
 import {
   Form,
   Input,
@@ -29,7 +30,21 @@ const { TextArea } = Input;
   loading: loading.effects['deviceType/fetchDeviceType']
 }))
 @Form.create() // 创建form对象到props
-export default class EditDeviceType extends PureComponent {
+export default class EditDeviceType extends Component {
+  state = {
+    deviceId: null,
+  }
+
+  componentDidMount () {
+    this.setState({
+      deviceId: this.props.match.params.id,
+    });
+    this.props.dispatch({
+      type: 'deviceType/fetchDeviceType',
+      payload: this.props.match.params.id,
+    });
+  }
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -39,14 +54,20 @@ export default class EditDeviceType extends PureComponent {
         console.log('validateFieldsAndScroll dispatch');
         this.props.dispatch({
           type: 'deviceType/submitEditDeviceType',
-          payload: values,
+          payload: {
+            ...values,
+            id: this.state.deviceId,
+          },
         });
       }
     });
   };
+
   render() {
-    const { submitting } = this.props;
+    const { deviceType, submitting } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
+
+    console.log(deviceType);
 
     const formItemLayout = {
       labelCol: {
@@ -69,13 +90,14 @@ export default class EditDeviceType extends PureComponent {
 
     return (
       <PageHeaderLayout
-        title="添加设备类型"
+        title="修改设备类型"
         content=""
       >
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="型号">
               {getFieldDecorator('model', {
+                initialValue: deviceType.model,
                 rules: [
                   {
                     required: true,
@@ -86,6 +108,7 @@ export default class EditDeviceType extends PureComponent {
             </FormItem>
             <FormItem {...formItemLayout} label="宣传型号">
               {getFieldDecorator('type_name', {
+                initialValue: deviceType.type_name,
                 rules: [
                   {
                     required: true,
@@ -95,14 +118,21 @@ export default class EditDeviceType extends PureComponent {
               })(<Input placeholder="请输入设备型号(中文，宣传用，可重复)" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="上市时间">
-              {getFieldDecorator('start_sell_time', {
-                rules: [
-                  {
-                    required: true,
-                    message: '请选择上市时间',
-                  },
-                ],
-              })(<DatePicker style={{ width: '100%' }} placeholder={'请选择上市时间'} />)}
+              {
+                getFieldDecorator('start_sell_time', {
+                  initialValue: moment(deviceType.start_sell_time, 'YYYY-MM-DD hh:mm:ss'),
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择上市时间',
+                    },
+                  ],
+                })(<DatePicker
+                  style={{ width: '100%' }}
+                  placeholder={'请选择上市时间'}
+                />)
+              }
+
             </FormItem>
             <FormItem {...formItemLayout} label={
               <span>
@@ -110,6 +140,7 @@ export default class EditDeviceType extends PureComponent {
               </span>
             }>
               {getFieldDecorator('type_profile', {
+                initialValue: deviceType.type_profile,
                 rules: [
                   {
                     required: false,

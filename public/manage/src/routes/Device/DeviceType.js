@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'dva';
-import { Card, Badge, Table, Divider } from 'antd';
+import { routerRedux } from 'dva/router';
+import { Card, Badge, Table, Divider, Button } from 'antd';
 import DescriptionList from 'components/DescriptionList';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import styles from './DeviceType.less';
@@ -175,6 +176,12 @@ export default class DeviceType extends Component {
             <Divider style={{ marginBottom: 32 }} />
             <DescriptionList size="large" title="型号图片" style={{ marginBottom: 32 }}>
             </DescriptionList>
+            <Divider style={{ marginBottom: 32 }} />
+            <Button icon="form" type="primary" onClick={() => {
+              this.props.dispatch(routerRedux.push(`/device/edit-device-type/${deviceType.id}`));// 页面跳转
+            }}>
+              修改
+            </Button>
             {
               // <Divider style={{ marginBottom: 32 }} />
               // <div className={styles.title}>退货商品</div>

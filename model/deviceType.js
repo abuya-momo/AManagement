@@ -98,10 +98,10 @@ DeviceType.prototype.editDeviceType = function (deviceType, id, callback) {
     }
 
     connection.connect();
-    var sql = 'UPDATE device_type SET model = ?, type_name = ?, type_profile = ?, type_pic = ? WHERE id = ?';
+    var sql = 'UPDATE device_type SET model = ?, type_name = ?, start_sell_time = ?, type_profile = ?, type_pic = ? WHERE id = ?';
     connection.query(
       sql,
-      [deviceType.model, deviceType.type_name, deviceType.type_profile, deviceType.type_pic, id],
+      [deviceType.model, deviceType.type_name, deviceType.start_sell_time, deviceType.type_profile, deviceType.type_pic, id],
       function (error, results, fields) {
         if (error) {
           if (error.code == "ER_DUP_ENTRY") {
