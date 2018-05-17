@@ -97,9 +97,9 @@ const menuData = [
     ],
   },
   {
-    name: '设备管理',
+    name: '设备类型管理',
     icon: 'calculator',
-    path: 'device',
+    path: 'device-type',
     children: [
       {
         name: '设备类型列表',
@@ -109,6 +109,13 @@ const menuData = [
         name: '添加设备类型',
         path: 'add-device-type',
       },
+    ],
+  },
+  {
+    name: '用户设备管理',
+    icon: 'profile',
+    path: 'device-user',
+    children: [
       {
         name: '设备信息查询',
         path: 'search-devices',

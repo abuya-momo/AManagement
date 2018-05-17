@@ -166,6 +166,10 @@ class BasicLayout extends React.PureComponent {
       this.props.dispatch(routerRedux.push('/exception/trigger'));
       return;
     }
+    if (key === 'user-space') {
+      this.props.dispatch(routerRedux.push('/user-space'));
+      return;
+    }
     if (key === 'logout') {
       this.props.dispatch({
         type: 'login/logout',

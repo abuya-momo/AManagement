@@ -5,7 +5,12 @@ export default {
 
   state: {
     list: [],
-    currentUser: {},
+    currentUser: {
+      name: 'Serati Ma',
+      avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
+      userid: '00000001',
+      notifyCount: 12,
+    },
   },
 
   effects: {
@@ -18,10 +23,10 @@ export default {
     },
     *fetchCurrent(_, { call, put }) {
       const response = yield call(queryCurrent);
-      yield put({
-        type: 'saveCurrentUser',
-        payload: response,
-      });
+      // yield put({
+      //   type: 'saveCurrentUser',
+      //   payload: response,
+      // });
     },
   },
 

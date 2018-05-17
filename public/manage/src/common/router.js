@@ -169,27 +169,33 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
     },
 
+
     // '/user/:id': {
     //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
     // },
 
-    '/device/device-type-list': {
+    '/device-type/device-type-list': {
       component: dynamicWrapper(app, ['deviceTypeList'], () => import('../routes/Device/DeviceTypeList')),
     },
-    '/device/device-type/:id': {
+    '/device-type/device-type/:id': {
       component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/DeviceType')),
     },
-    '/device/add-device-type': {
+    '/device-type/add-device-type': {
       component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/AddDeviceType')),
     },
-    '/device/edit-device-type/:id': {
+    '/device-type/edit-device-type/:id': {
       component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/EditDeviceType')),
     },
-    '/device/search-devices': {
+
+    '/device-user/search-devices': {
       component: dynamicWrapper(app, [], () => import('../routes/Device/SearchDevices')),
     },
-    '/device/search-user': {
+    '/device-user/search-user': {
       component: dynamicWrapper(app, [], () => import('../routes/Device/SearchUser')),
+    },
+
+    '/user-space': {
+      component: dynamicWrapper(app, ['profile'], () => import('../routes/User/Space')),
     },
   };
   // Get name from ./menu.js or just set it in the router data.
