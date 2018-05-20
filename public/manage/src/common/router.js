@@ -188,10 +188,10 @@ export const getRouterData = app => {
     },
 
     '/device-user/search-devices': {
-      component: dynamicWrapper(app, [], () => import('../routes/Device/SearchDevices')),
+      component: dynamicWrapper(app, ['device'], () => import('../routes/Device/SearchDevices')),
     },
     '/device-user/search-user': {
-      component: dynamicWrapper(app, [], () => import('../routes/Device/SearchUser')),
+      component: dynamicWrapper(app, ['searchUser'], () => import('../routes/Device/SearchUser')),
     },
 
     '/user-space': {

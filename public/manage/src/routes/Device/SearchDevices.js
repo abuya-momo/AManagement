@@ -32,7 +32,7 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 const statusMap = ['default', 'processing', 'success', 'error'];
-const status = ['已解绑', '绑定中'];
+const status = ['已解绑', '绑定中', '其他'];
 
 const CreateForm = Form.create()(props => {
   const { modalVisible, form, handleAdd, handleModalVisible } = props;
@@ -59,24 +59,26 @@ const CreateForm = Form.create()(props => {
   );
 });
 
-@connect(({ rule, loading }) => ({
-  rule,
-  loading: loading.models.rule,
+@connect(({ device, loading }) => ({
+  device,
+  loading: device.loading,
 }))
 @Form.create()
 export default class SearchDevices extends PureComponent {
   state = {
     modalVisible: false,
     expandForm: false,
+    pagination: {
+      total: 0,
+      pageSize: 5,
+      current: 1,
+    },
     selectedRows: [],
     formValues: {},
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'rule/fetch',
-    });
+
   }
 
   handleStandardTableAChange = (pagination, filtersArg, sorter) => {
@@ -124,27 +126,32 @@ export default class SearchDevices extends PureComponent {
   };
 
   handleSearch = e => {
-    e.preventDefault();
-
-    const { dispatch, form } = this.props;
-
-    form.validateFields((err, fieldsValue) => {
-      if (err) return;
-
-      const values = {
-        ...fieldsValue,
-        updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
-      };
-
-      this.setState({
-        formValues: values,
-      });
-
-      dispatch({
-        type: 'rule/fetch',
-        payload: values,
-      });
-    });
+    // e.preventDefault();
+    //
+    // console.log('handleSearch');
+    //
+    // const { dispatch, form } = this.props;
+    //
+    // form.validateFields((err, fieldsValue) => {
+    //   if (err) return;
+    //
+    //   console.log('fieldsValue');
+    //   console.log(fieldsValue);
+    //
+    //   const values = {
+    //     ...fieldsValue,
+    //     updatedAt: fieldsValue.updatedAt && fieldsValue.updatedAt.valueOf(),
+    //   };
+    //
+    //   this.setState({
+    //     formValues: values,
+    //   });
+    //
+    //   dispatch({
+    //     type: 'rule/fetch',
+    //     payload: values,
+    //   });
+    // });
   };
 
   handleModalVisible = flag => {
@@ -167,23 +174,57 @@ export default class SearchDevices extends PureComponent {
     });
   };
 
-  renderSimpleForm() {
+  searchDeviceInfo (param, paramType) {
+    console.log(param);
+    this.props.dispatch({
+      type: 'device/fetchDeviceInfo',
+      payload: {
+        param: param,
+        paramType: paramType,
+      },
+    });
+  }
+
+  handleSearchByIdentifier () {
+    this.props.form.validateFields((err, values) => {
+      if (err) return;
+      console.log(values);
+      this.searchDeviceInfo(values.param, 'identifier_number');
+    });
+  }
+
+  handleSearchByMac () {
+    this.props.form.validateFields((err, values) => {
+      if (err) return;
+      this.searchDeviceInfo(param, 'mac');
+    });
+  }
+
+  renderSimpleForm () {
+    console.log('renderSimpleForm');
     const { getFieldDecorator } = this.props.form;
     return (
       <Form onSubmit={this.handleSearch} layout="inline">
         <Row gutter={{ md: 8, lg: 24, xl: 48 }}>
           <Col md={8} sm={24}>
-            <FormItem label="规则编号">
-              {getFieldDecorator('no')(<Input placeholder="请输入" />)}
+            <FormItem label="设备序列号/Mac地址">
+              {getFieldDecorator('param', {
+                rules: [{
+                  required: true,
+                  message: '请输入查询条件'
+                }]
+              })(<Input placeholder="请输入" />)}
             </FormItem>
           </Col>
           <Col md={8} sm={24}>
             <span className={styles.submitButtons}>
-              <Button type="primary" htmlType="submit">
-                查询
+              <Button type="primary" key="1" onClick={()=>{this.handleSearchByIdentifier();}} style={{ marginRight: 20 }}>
+                查询序列号
               </Button>
-              <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
-                重置
+              <Button type="primary" key="2" htmlType="submit" onClick={()=>{
+                this.handleSearchByMac();
+              }}>
+                查询Mac地址
               </Button>
             </span>
           </Col>
@@ -193,29 +234,46 @@ export default class SearchDevices extends PureComponent {
   }
 
   render() {
-    const { rule: { data }, loading } = this.props;
+    const { device, loading } = this.props;
     const { selectedRows, modalVisible } = this.state;
+
+    console.log(device);
+
+    const listData = {
+      list: device.binded_users,
+      pagination: {
+        ...this.state.pagination,
+        total: device.binded_users ? device.binded_users.length : 0,
+      },
+    }
 
     const columns = [
       {
         title: '用户id',
         dataIndex: 'id',
+        key: 'id',
       },
       {
         title: '小米id',
-        dataIndex: 'description',
+        dataIndex: 'mi_id',
+        key: 'mi_id',
       },
       {
         title: '用户名',
-        dataIndex: 'description',
+        dataIndex: 'name',
+        key: 'name',
       },
       {
         title: '绑定时间',
-        dataIndex: 'callNo',
+        dataIndex: 'bind_time',
+        key: 'bind_time',
+        sorter: true,
+        render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
       {
         title: '绑定状态',
-        dataIndex: 'state',
+        dataIndex: 'if_binding',
+        key: 'if_binding',
         filters: [
           {
             text: status[0],
@@ -225,14 +283,6 @@ export default class SearchDevices extends PureComponent {
             text: status[1],
             value: 1,
           },
-          {
-            text: status[2],
-            value: 2,
-          },
-          {
-            text: status[3],
-            value: 3,
-          },
         ],
         onFilter: (value, record) => record.status.toString() === value,
         render(val) {
@@ -241,7 +291,8 @@ export default class SearchDevices extends PureComponent {
       },
       {
         title: '解绑时间',
-        dataIndex: 'updatedAt',
+        dataIndex: 'unbind_time',
+        key: 'unbind_time',
         sorter: true,
         render: val => <span>{moment(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
       },
@@ -253,24 +304,25 @@ export default class SearchDevices extends PureComponent {
     };
 
     return (
-      <PageHeaderLayout title="查询表格">
+      <PageHeaderLayout title="设备信息查询" content="可以查询到已经入网的设备信息及历史绑定用户">
         <Card bordered={false}>
           <div className={styles.tableListForm}>{this.renderSimpleForm()}</div>
           <Divider style={{ marginBottom: 32 }} />
           <DescriptionList size="large" title="查询结果" style={{ marginBottom: 32 }}>
-            <Description term="设备id">1000000000</Description>
-            <Description term="设备型号">已取货</Description>
-            <Description term="Mac地址">已取货</Description>
-            <Description term="序列号">已取货</Description>
-            <Description term="开机时间">1234123421</Description>
-            <Description term="绑定次数">3214321432</Description>
-            <Description term="状态">3214321432</Description>
+            <Description key="1" term="设备id">{device.id}</Description>
+            <Description key="2" term="设备型号">{device.model}</Description>
+            <Description key="3" term="设备型号">{device.type_name}</Description>
+            <Description key="4" term="Mac地址">{device.mac}</Description>
+            <Description key="5" term="序列号">{device.identifier_number}</Description>
+            <Description key="6" term="绑定次数">{device.count ? device.count + '' : ''}</Description>
+            <Description key="7" term="开机时间">{device.start_time}</Description>
+            <Description key="8" term="状态">{device.state == 31 ? '未绑定' : '绑定中'}</Description>
           </DescriptionList>
           <div className={styles.tableList}>
             <StandardTableA
               selectedRows={selectedRows}
               loading={loading}
-              data={[]}
+              data={listData}
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableAAAChange}

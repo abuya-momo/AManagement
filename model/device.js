@@ -81,6 +81,30 @@ Device.prototype.findDeviceIdByIdentifierNumber = function (identifierNumber, ca
   });
 };
 
+// 根据Mac地址查找设备id以及绑定状态，如果没有返回-1[R]
+Device.prototype.findDeviceIdByMac = function (mac, callback) {
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      callback(err);
+    }
+
+    connection.connect();
+    connection.query('SELECT id, state FROM device WHERE mac = ?', mac, function (error, results, fields) {
+      if (error) {
+        callback(error);
+      }
+
+      if (results.length > 0) {
+        callback(results[0]['id'], results[0]['state']);
+      } else {
+        callback(-1);
+      }
+
+      connection.release();
+    });
+  });
+};
+
 // 设备入网[C]
 Device.prototype.initDevice = function (identifierNumber, mac, deviceTypeId, startTime, callback) {
   pool.getConnection(function (err, connection) {
@@ -103,7 +127,7 @@ Device.prototype.initDevice = function (identifierNumber, mac, deviceTypeId, sta
   });
 };
 
-// 根据型号查询型号id，如果没有找到则返回-1[R]
+// 根据型号查询型号id，如果没有找到则返回-1[R] #########应该在deviceType.js
 Device.prototype.findDeviceTypeIdByModel = function (model, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -214,8 +238,10 @@ Device.prototype.getDevice = function (id, callback) {
       callback(err);
     }
 
+    console.log('id = ' + id);
+
     connection.connect();
-    connection.query('SELECT d.count, d.start_time, d.mac, d.state, dt.model, dt.type_name, dt.type_profile, dt.type_pic FROM device AS d, device_type AS dt WHERE d.id = ? AND d.device_type = dt.id', id, function (error, results, fields) {
+    connection.query('SELECT d.count, d.start_time, d.mac, d.state, dt.model, dt.type_name, dt.type_profile, dt.type_pic, d.identifier_number FROM device AS d, device_type AS dt WHERE d.id = ? AND d.device_type = dt.id', id, function (error, results, fields) {
       if (error) {
         callback(error);
       }

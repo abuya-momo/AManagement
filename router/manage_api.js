@@ -1,4 +1,6 @@
 var deviceType = require('../controllerForManage/deviceType');
+var device = require('../controllerForManage/device');
+var user = require('../controllerForManage/user');
 
 // 路由 - 后台管理 ---------------------------------------
 module.exports = function (app) {
@@ -13,4 +15,10 @@ module.exports = function (app) {
   app.post('/manage/edit_device_type', deviceType.edit_device_type);
 
   // app.post('/app/device_types', upload.array(), function (req, res) {
+
+  // 路由-后台管理-设备
+  // 路由-后台管理-设备信息查询
+  app.get('/manage/device', device.device);
+  // 路由-后台管理-用户设备查询
+  app.get('/manage/user', user.user);
 };

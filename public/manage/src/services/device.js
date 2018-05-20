@@ -6,3 +6,10 @@ export async function query(deviceId) {
     mode: 'same-origin',
   });
 }
+
+export async function queryDeviceInfo(param, paramType) {
+  return request(`/manage/device?param=${param}&paramType=${paramType}`, {
+    method: 'GET',
+    mode: 'same-origin',
+  });
+}

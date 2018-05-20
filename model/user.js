@@ -9,6 +9,7 @@ function User(id, name, password, mi_id, role) {
   this.id = role ? role : null;
 }
 
+// 根据mi_id获取用户id
 User.prototype.searchUserByMiID = function (mi_id, callback) {
   pool.getConnection(function (err, connection) {
     connection.connect();
@@ -18,10 +19,31 @@ User.prototype.searchUserByMiID = function (mi_id, callback) {
       }
 
       if (results.length > 0) {
-        callback(results[0]['id']);
+        callback(null, results[0]['id']);
       }
       else {
-        callback(-1);
+        callback(null, -1);
+      }
+
+      connection.release();
+    });
+  });
+};
+
+// 根据userId获取用户资料
+User.prototype.getUserInfoById = function (id, callback) {
+  pool.getConnection(function (err, connection) {
+    connection.connect();
+    connection.query('SELECT id, name, mi_id, role FROM user WHERE id = ?', [id], function (error, results, fields) {
+      if (error) {
+        return error;
+      }
+
+      if (results && results.length > 0) {
+        callback(null, results[0]);
+      }
+      else {
+        callback(null, null);
       }
 
       connection.release();
