@@ -23,7 +23,7 @@ import {
 import StandardTableA from 'components/StandardTableA';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
-import styles from './DeviceTypeList.less';
+import styles from './ManagerList.less';
 
 const FormItem = Form.Item;
 const { Option } = Select;
@@ -31,13 +31,15 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
+const statusMap = ['default', 'processing', 'success', 'error'];
+const status = ['正常', '已注销'];
 
-@connect(({ deviceTypeList, loading }) => ({
-  deviceTypeList,
-  loading: loading.effects['deviceType/fetchDeviceTypes'],
+@connect(({ manager, loading }) => ({
+  manager,
+  loading: manager.loading,
 }))
 @Form.create()
-export default class DeviceTypeList extends Component {
+export default class ManagerList extends Component {
   state = {
     pagination: {
       total: 0,
@@ -48,9 +50,9 @@ export default class DeviceTypeList extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    dispatch({
-      type: 'deviceTypeList/fetchDeviceTypes',
-    });
+    // dispatch({
+    //   type: 'manager/fetchManagers',
+    // });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -84,32 +86,59 @@ export default class DeviceTypeList extends Component {
   };
 
   render() {
-    const { deviceTypeList: { list }, loading } = this.props;
+    const { manager, loading } = this.props;
 
     let data = {
-      list: list,
+      list: manager.managers,
       pagination: {
         ...this.state.pagination,
-        total: list ? list.length : 0,
+        total: manager.managers ? manager.managers.length : 0,
       },
     }
 
     const columns = [
       {
-        title: '型号编号',
+        title: '管理员编号',
         dataIndex: 'id',
       },
       {
-        title: '型号',
-        dataIndex: 'model',
+        title: '管理员姓名',
+        dataIndex: 'manager_name',
       },
       {
-        title: '型号名称',
-        dataIndex: 'type_name',
+        title: '品牌',
+        dataIndex: 'brand',
       },
       {
-        title: '上市时间',
-        dataIndex: 'start_sell_time',
+        title: '创建时间',
+        dataIndex: 'start_time',
+        sorter: true,
+        render: val => <span>{
+          moment(val).format('YYYY-MM-DD HH:mm:ss')
+        }</span>,
+      },
+      {
+        title: '状态',
+        dataIndex: 'if_deleted',
+        key: 'if_deleted',
+        filters: [
+          {
+            text: status[0],
+            value: 0,
+          },
+          {
+            text: status[1],
+            value: 1,
+          },
+        ],
+        onFilter: (value, record) => record.status.toString() === value,
+        render(val) {
+          return <Badge status={statusMap[val]} text={status[val]} />;
+        },
+      },
+      {
+        title: '注销时间',
+        dataIndex: 'delete_time',
         sorter: true,
         render: val => <span>{
           moment(val).format('YYYY-MM-DD HH:mm:ss')
@@ -120,21 +149,19 @@ export default class DeviceTypeList extends Component {
         render: (currentRecord) => {
           return (
           <Fragment>
-            <a href={`/#/device-type/device-type/${currentRecord.id}`}>详情</a>
-            <Divider type="vertical" />
-            <a href={`/#/device-type/edit-device-type/${currentRecord.id}`}>修改</a>
+            <a href={`/#/device/device-type/${currentRecord.id}`}>注销账号</a>
           </Fragment>
         )},
       },
     ];
 
     return (
-      <PageHeaderLayout title="设备类型">
+      <PageHeaderLayout title="管理员列表">
         <Card bordered={false}>
           <div className={styles.tableList}>
             <div className={styles.tableListOperator}>
               <Button icon="plus" type="primary" onClick={() => {
-                this.props.dispatch(routerRedux.push('/device-type/add-device-type'));// 页面跳转
+                this.props.dispatch(routerRedux.push('/manager/add-manager'));
               }}>
                 新建
               </Button>

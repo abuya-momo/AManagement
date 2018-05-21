@@ -28,7 +28,7 @@ export default {
       var response = yield call(submitAdd, payload);
       if (response.success) {
         message.success('提交成功');
-        yield put(routerRedux.push('/device/device-type-list')); // 提交成功后页面跳转
+        yield put(routerRedux.push('/device-type/device-type-list')); // 提交成功后页面跳转
       } else {
         message.error('提交失败');
         return true;
@@ -41,7 +41,7 @@ export default {
       console.log(response);
       if (response.success) {
         message.success('提交成功');
-        yield put(routerRedux.push(`/device/device-type/${payload.id}`));
+        yield put(routerRedux.push(`/device-type/device-type/${payload.id}`));
       } else {
         message.error('提交失败');
         return true;

@@ -26,6 +26,7 @@ const menuData = [
     name: '表单',
     icon: 'form',
     path: 'form',
+    hideInMenu: true,
     children: [
       {
         name: '基础表单',
@@ -46,6 +47,7 @@ const menuData = [
     name: '列表',
     icon: 'table',
     path: 'list',
+    hideInMenu: true,
     children: [
       {
         name: '查询表格',
@@ -83,6 +85,7 @@ const menuData = [
     name: '详情页',
     icon: 'profile',
     path: 'profile',
+    hideInMenu: true,
     authority: 'admin',
     children: [
       {
@@ -93,6 +96,21 @@ const menuData = [
         name: '高级详情页',
         path: 'advanced',
         authority: 'admin',
+      },
+    ],
+  },
+  {
+    name: '品牌管理',
+    icon: 'heart-o',
+    path: 'brand',
+    children: [
+      {
+        name: '品牌列表',
+        path: 'brand-list',
+      },
+      {
+        name: '添加品牌',
+        path: 'add-brand',
       },
     ],
   },
@@ -113,7 +131,7 @@ const menuData = [
   },
   {
     name: '用户设备管理',
-    icon: 'profile',
+    icon: 'solution',
     path: 'device-user',
     children: [
       {
@@ -130,6 +148,7 @@ const menuData = [
     name: '广告管理',
     icon: 'picture',
     path: 'ad',
+    hideInMenu: true,
     children: [
       {
         name: '广告列表',
@@ -148,11 +167,11 @@ const menuData = [
     children: [
       {
         name: '管理员列表',
-        path: 'table-list',
+        path: 'manager-list',
       },
       {
         name: '添加管理员',
-        path: 'basic-form',
+        path: 'add-manager',
       },
     ],
   },

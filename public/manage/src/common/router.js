@@ -169,11 +169,11 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, [], () => import('../routes/User/RegisterResult')),
     },
 
-
     // '/user/:id': {
     //   component: dynamicWrapper(app, [], () => import('../routes/User/SomeComponent')),
     // },
 
+    // 设备类型
     '/device-type/device-type-list': {
       component: dynamicWrapper(app, ['deviceTypeList'], () => import('../routes/Device/DeviceTypeList')),
     },
@@ -187,6 +187,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Device/EditDeviceType')),
     },
 
+    // 搜索
     '/device-user/search-devices': {
       component: dynamicWrapper(app, ['device'], () => import('../routes/Device/SearchDevices')),
     },
@@ -194,8 +195,31 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['searchUser'], () => import('../routes/Device/SearchUser')),
     },
 
+    // 账号
     '/user-space': {
       component: dynamicWrapper(app, ['profile'], () => import('../routes/User/Space')),
+    },
+
+    // manager管理员
+    '/manager/manager-list': {
+      component: dynamicWrapper(app, ['manager'], () => import('../routes/Manager/ManagerList')),
+    },
+    '/manager/add-manager': {
+      component: dynamicWrapper(app, ['manager'], () => import('../routes/Manager/AddManager')),
+    },
+
+    // brand品牌
+    '/brand/brand-list': {
+      component: dynamicWrapper(app, ['deviceTypeList'], () => import('../routes/Brand/BrandList')),
+    },
+    '/brand/brand/:id': {
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Brand/Brand')),
+    },
+    '/brand/add-brand': {
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Brand/AddBrand')),
+    },
+    '/brand/edit-brand/:id': {
+      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Brand/EditBrand')),
     },
   };
   // Get name from ./menu.js or just set it in the router data.
