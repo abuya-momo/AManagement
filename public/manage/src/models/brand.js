@@ -3,27 +3,25 @@ import {
   query,
   submitAdd,
   submitEdit,
-  submitDelete,
-} from '../services/manager';
+} from '../services/brand';
 import { message } from 'antd';
 import moment from 'moment';
 
 export default {
-  namespace: 'manager',
+  namespace: 'brand',
 
   state: {
     id: null,
-    name: null,
-    brand: null,
-    start_time: null,
-    if_deleted: null,
-    delete_time: null,
+    brand_name: null,
+    slogan: null,
+    brand_description: null,
+    brand_icon: null,
     loading: false,
   },
 
   effects: {
-    *fetchManager({ payload }, { call, put }) {
-      console.log('fetchManager ' + payload);
+    *fetchBrand({ payload }, { call, put }) {
+      console.log('fetchBrand ' + payload);
       yield put({
         type: 'loading',
         payload: null,
@@ -33,19 +31,19 @@ export default {
       yield put({
         type: 'saveBrand',
         payload: {
-          manager: response.manager ? response.manager : {},
+          brand: response.brand ? response.brand : {},
         }
       });
       yield put({
         type: 'loadFinish',
         payload: null,
       });
-      if (!response.manager.id) {
+      if (!response.brand.id) {
         message.info('未找到相关信息');
       }
     },
-    *submitAddManager({ payload }, { call, put }) {
-      console.log('submitAddManager');
+    *submitAddBrand({ payload }, { call, put }) {
+      console.log('dsfdgyjhj');
       var response = yield call(submitAdd, payload);
       if (response.success) {
         message.success('提交成功');
@@ -67,24 +65,13 @@ export default {
         return true;
       }
     },
-    *submitDeleteManager({ payload }, { call, put }) {
-      console.log('submitDeleteManager');
-      var response = yield call(submitDelete, payload);
-      if (response.success) {
-        message.success('提交成功');
-        yield put(routerRedux.push('/brand/brand-list')); // 提交成功后页面跳转
-      } else {
-        message.error('提交失败');
-        return true;
-      }
-    },
   },
 
   reducers: {
-    saveManager(state, action) {
+    saveBrand(state, action) {
       return {
         ...state,
-        ...action.payload.manager,
+        ...action.payload.brand,
       };
     },
     loading(state, action) {
@@ -98,6 +85,6 @@ export default {
         ...state,
         loading: false,
       }
-    }
+    },
   },
 };

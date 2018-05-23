@@ -31,12 +31,13 @@ const getValue = obj =>
   Object.keys(obj)
     .map(key => obj[key])
     .join(',');
-const statusMap = ['default', 'processing', 'success', 'error'];
+const statusMap = ['processing', 'default'];
 const status = ['正常', '已注销'];
 
-@connect(({ manager, loading }) => ({
+@connect(({ managerList, manager, loading }) => ({
+  managerList,
   manager,
-  loading: manager.loading,
+  loading: loading.effects['managerList/fetchManagers'],
 }))
 @Form.create()
 export default class ManagerList extends Component {
@@ -50,9 +51,9 @@ export default class ManagerList extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
-    // dispatch({
-    //   type: 'manager/fetchManagers',
-    // });
+    dispatch({
+      type: 'managerList/fetchManagers',
+    });
   }
 
   handleStandardTableChange = (pagination, filtersArg, sorter) => {
@@ -85,14 +86,26 @@ export default class ManagerList extends Component {
     }
   };
 
+  handleDeleteManager (id) {
+    console.log(id);
+    this.props.dispatch({
+      type: 'manager/submitDeleteManager',
+      payload: {
+        id: id,
+      },
+    })
+  }
+
   render() {
-    const { manager, loading } = this.props;
+    const { managerList, loading } = this.props;
+
+    console.log(managerList);
 
     let data = {
-      list: manager.managers,
+      list: managerList.list,
       pagination: {
         ...this.state.pagination,
-        total: manager.managers ? manager.managers.length : 0,
+        total: managerList.managers ? managerList.managers.length : 0,
       },
     }
 
@@ -103,7 +116,7 @@ export default class ManagerList extends Component {
       },
       {
         title: '管理员姓名',
-        dataIndex: 'manager_name',
+        dataIndex: 'name',
       },
       {
         title: '品牌',
@@ -149,7 +162,9 @@ export default class ManagerList extends Component {
         render: (currentRecord) => {
           return (
           <Fragment>
-            <a href={`/#/device/device-type/${currentRecord.id}`}>注销账号</a>
+            <Button onClick={()=>{
+              this.handleDeleteManager(currentRecord.id);
+            }}>注销账号</Button>
           </Fragment>
         )},
       },

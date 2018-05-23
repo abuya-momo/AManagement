@@ -202,6 +202,9 @@ export default class SiderMenu extends PureComponent {
     if (!selectedKeys.length) {
       selectedKeys = [openKeys[openKeys.length - 1]];
     }
+
+    // <img src={logo} alt="logo" />
+
     return (
       <Sider
         trigger={null}
@@ -214,8 +217,7 @@ export default class SiderMenu extends PureComponent {
       >
         <div className={styles.logo} key="logo">
           <Link to="/">
-            <img src={logo} alt="logo" />
-            <h1>Ant Design Pro</h1>
+            <h1>运动设备APP管理后台</h1>
           </Link>
         </div>
         <Menu

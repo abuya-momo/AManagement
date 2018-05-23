@@ -24,23 +24,24 @@ const { Option } = Select;
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 
-@connect(({ deviceType, loading }) => ({
-  deviceType: deviceType,
-  submitting: loading.effects['deviceType/submitEditDeviceType'],// loading.effects是对应函数的返回值
-  loading: loading.effects['deviceType/fetchDeviceType']
+@connect(({ brand, loading }) => ({
+  brand: brand,
+  submitting: loading.effects['brand/submitEditBrand'],// loading.effects是对应函数的返回值
+  loading: loading.effects['brand/fetchBrand']
 }))
 @Form.create() // 创建form对象到props
 export default class EditBrand extends Component {
   state = {
-    deviceId: null,
+    brandId: null,
   }
 
   componentDidMount () {
+    console.log('componentDidMount');
     this.setState({
-      deviceId: this.props.match.params.id,
+      brandId: this.props.match.params.id,
     });
     this.props.dispatch({
-      type: 'deviceType/fetchDeviceType',
+      type: 'brand/fetchBrand',
       payload: this.props.match.params.id,
     });
   }
@@ -53,10 +54,10 @@ export default class EditBrand extends Component {
       if (!err) {
         console.log('validateFieldsAndScroll dispatch');
         this.props.dispatch({
-          type: 'deviceType/submitEditDeviceType',
+          type: 'brand/submitEditBrand',
           payload: {
             ...values,
-            id: this.state.deviceId,
+            id: this.state.brandId,
           },
         });
       }
@@ -64,10 +65,10 @@ export default class EditBrand extends Component {
   };
 
   render() {
-    const { deviceType, submitting } = this.props;
+    const { brand, submitting } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
 
-    console.log(deviceType);
+    console.log(brand);
 
     const formItemLayout = {
       labelCol: {
@@ -96,7 +97,8 @@ export default class EditBrand extends Component {
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="品牌名称">
-              {getFieldDecorator('model', {
+              {getFieldDecorator('brand_name', {
+                initialValue: brand.brand_name,
                 rules: [
                   {
                     required: true,
@@ -106,7 +108,8 @@ export default class EditBrand extends Component {
               })(<Input placeholder="请输入品牌名称" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="品牌Slogan">
-              {getFieldDecorator('type_name', {
+              {getFieldDecorator('slogan', {
+                initialValue: brand.slogan,
                 rules: [
                   {
                     required: true,
@@ -120,7 +123,8 @@ export default class EditBrand extends Component {
                 品牌简介<em className={styles.optional}>（选填）</em>
               </span>
             }>
-              {getFieldDecorator('type_profile', {
+              {getFieldDecorator('brand_description', {
+                initialValue: brand.brand_description,
                 rules: [
                   {
                     required: false,

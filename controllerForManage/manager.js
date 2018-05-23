@@ -2,8 +2,8 @@ var Manager = require('../model/manager');
 
 // 获取管理员列表[Document edit]
 module.exports.managers = function (req, res) {
-  var brand = new Brand();
-  brand.getManagerList(function (error, managerList) {
+  var manager = new Manager();
+  manager.getManagerList(function (error, managerList) {
     if (error) {
       res.send(error);
       return;
@@ -19,14 +19,14 @@ module.exports.managers = function (req, res) {
 module.exports.manager = function (req, res) {
   var managerId = req.query.id;
   var manager = new Manager();
-  manager.findBrandById(brandId, function (error, brand) {
+  manager.findManagerById(managerId, function (error, manager) {
     if (error) {
       res.send(error);
       return;
     }
 
     res.json({
-      brand: brand
+      manager: manager
     });
   });
 };
@@ -38,8 +38,8 @@ module.exports.add_manager = function (req, res) {
     password: req.body.password ? req.body.password : null,
     brand: req.body.brand ? req.body.brand : null,
   };
-  var brand = new Brand();
-  brand.addManager(managerParams, function (error, success) {
+  var manager = new Manager();
+  manager.addManager(managerParams, function (error, success) {
     if (error) {
       res.json({
         success: false,
@@ -83,9 +83,7 @@ module.exports.edit_manager = function (req, res) {
 
 // 注销管理员[Document edit]
 module.exports.delete_manager = function (req, res) {
-  var brandParams = {
-    id: req.body.id ? req.body.id : null,
-  };
+  var id = req.body.id ? req.body.id : null;
   var manager = new Manager();
   manager.deleteManager(id, function (error, success) {
     if (error) {

@@ -1,4 +1,4 @@
-import React, { PureComponent } from 'react';
+import React, { PureComponent, Component } from 'react';
 import { connect } from 'dva';
 import {
   Form,
@@ -21,11 +21,19 @@ import styles from './style.less';
 const FormItem = Form.Item;
 const { TextArea } = Input;
 
-@connect(({ loading }) => ({
-  submitting: loading.effects['deviceType/submitAddDeviceType'],// loading.effects是对应函数的返回值
+@connect(({ manager, brandList, loading }) => ({
+  manager,
+  brandList,
+  submitting: loading.effects['manager/submitAddManager'],// loading.effects是对应函数的返回值
 }))
 @Form.create() // 创建form对象到props
-export default class AddManager extends PureComponent {
+export default class AddManager extends Component {
+  componentDidMount () {
+    this.props.dispatch({
+      type: 'brandList/fetchBrands',
+    })
+  }
+
   handleSubmit = e => {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -34,15 +42,18 @@ export default class AddManager extends PureComponent {
       if (!err) {
         console.log('validateFieldsAndScroll dispatch');
         this.props.dispatch({
-          type: 'deviceType/submitAddDeviceType',
+          type: 'manager/submitAddManager',
           payload: values,
         });
       }
     });
   };
+
   render() {
-    const { submitting } = this.props;
+    const { brandList, submitting } = this.props;
     const { getFieldDecorator, getFieldValue } = this.props.form;
+
+    const brands = brandList.list;
 
     const formItemLayout = {
       labelCol: {
@@ -63,6 +74,10 @@ export default class AddManager extends PureComponent {
       },
     };
 
+    const options = brands.map((item, index)=>{
+      return (<Option value={item.id} key={index}>{item.brand_name}</Option>);
+    });
+
     return (
       <PageHeaderLayout
         title="添加管理员"
@@ -71,36 +86,32 @@ export default class AddManager extends PureComponent {
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="管理员姓名">
-              {getFieldDecorator('model', {
+              {getFieldDecorator('name', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入设备型号(英文)',
+                    message: '请输入管理员姓名',
                   },
                 ],
-              })(<Input placeholder="请输入设备型号（英文）" />)}
+              })(<Input placeholder="管理员姓名" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="品牌">
-              {getFieldDecorator('type_name')(
+              {getFieldDecorator('brand')(
                 <Select
-                  showSearch
                   placeholder="请选择品牌"
-                  filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 >
-                  <Option value="1">同事甲</Option>
-                  <Option value="2">同事乙</Option>
-                  <Option value="3">同事丙</Option>
+                  {options}
                 </Select>)}
             </FormItem>
             <FormItem {...formItemLayout} label="初始密码">
-              {getFieldDecorator('model', {
+              {getFieldDecorator('password', {
                 rules: [
                   {
                     required: true,
-                    message: '请输入设备型号(英文)',
+                    message: '请输入初始密码',
                   },
                 ],
-              })(<Input placeholder="请输入设备型号（英文）" />)}
+              })(<Input placeholder="请输入初始密码" />)}
             </FormItem>
             <FormItem {...submitFormLayout} style={{ marginTop: 32 }}>
               <Button type="primary" htmlType="submit" loading={submitting}>

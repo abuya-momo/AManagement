@@ -36,9 +36,9 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-@connect(({ deviceTypeList, loading }) => ({
-  deviceTypeList,
-  loading: loading.effects['deviceType/fetchDeviceTypes'],
+@connect(({ brandList, loading }) => ({
+  brandList,
+  loading: loading.effects['brandList/fetchBrands'],
 }))
 @Form.create()
 export default class BrandList extends Component {
@@ -53,7 +53,7 @@ export default class BrandList extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     dispatch({
-      type: 'deviceTypeList/fetchDeviceTypes',
+      type: 'brandList/fetchBrands',
     });
   }
 
@@ -88,7 +88,7 @@ export default class BrandList extends Component {
   };
 
   render() {
-    const { deviceTypeList: { list }, loading } = this.props;
+    const { brandList: { list }, loading } = this.props;
 
     let data = {
       list: list,
@@ -123,35 +123,25 @@ export default class BrandList extends Component {
       }],
     }];
 
-    const ListContent = ({ data: { owner, createdAt, percent, status } }) => (
-      <div className={styles.listContent}>
-        <div className={styles.listContentItem}>
-          <span>Manager</span>
-          <p>{((list)=>{
-            let a = list.map(item=><span className="manager">{item.name}</span>);
-            console.log(a);
-            if (a.length > 2) {
-              a = a.slice(0, 2);
-              a.push(<span className="manager-end">等</span>)
-            }
-            return a;
-          })(managersListTest[0].managers)
-          }</p>
-        </div>
-        <div className={styles.listContentItem}>
-          <span>型号总数</span>
-          <p><span className="number">10</span>个</p>
-        </div>
-        <div className={styles.listContentItem}>
-          <span>生产中型号</span>
-          <p><span className="number">6</span>个</p>
-        </div>
-        <div className={styles.listContentItem}>
-          <span>已发售型号</span>
-          <p><span className="number">7</span>个</p>
-        </div>
-      </div>
-    );
+    // const ListContent = ({ data: { owner, createdAt, percent, status } }) => (
+    //   <div className={styles.listContent}>
+    //     <div className={styles.listContentItem}>
+    //       <span>Manager</span>
+    //       <p>{((list)=>{
+    //         let a = list.map(item=><span className="manager">{item.name}</span>);
+    //         console.log(a);
+    //         if (a.length > 2) {
+    //           a = a.slice(0, 2);
+    //           a.push(<span className="manager-end">等</span>)
+    //         }
+    //         return a;
+    //       })(managersListTest[0].managers)
+    //       }</p>
+    //     </div>
+    //   </div>
+    // );
+
+    // <ListContent data={item} />
 
     const columns = [
       {
@@ -187,112 +177,14 @@ export default class BrandList extends Component {
       },
     ];
 
-    const titles = [
-      'Alipay',
-      'Angular',
-      'Ant Design',
-      'Ant Design Pro',
-      'Bootstrap',
-      'React',
-      'Vue',
-      'Webpack',
-    ];
-
-    const user = [
-      '付小小',
-      '曲丽丽',
-      '林东东',
-      '周星星',
-      '吴加好',
-      '朱偏右',
-      '鱼酱',
-      '乐哥',
-      '谭小仪',
-      '仲尼',
-    ];
-
     const avatars = [
-      'https://gw.alipayobjects.com/zos/rmsportal/WdGqmHpayyMjiEhcKoVE.png', // Alipay
-      'https://gw.alipayobjects.com/zos/rmsportal/zOsKZmFRdUtvpqCImOVY.png', // Angular
-      'https://gw.alipayobjects.com/zos/rmsportal/dURIMkkrRFpPgTuzkwnB.png', // Ant Design
-      'https://gw.alipayobjects.com/zos/rmsportal/sfjbOqnsXXJgNCjCzDBL.png', // Ant Design Pro
-      'https://gw.alipayobjects.com/zos/rmsportal/siCrBXXhmvTQGWPNLBow.png', // Bootstrap
-      'https://gw.alipayobjects.com/zos/rmsportal/kZzEzemZyKLKFsojXItE.png', // React
-      'https://gw.alipayobjects.com/zos/rmsportal/ComBAopevLwENQdKWiIn.png', // Vue
-      'https://gw.alipayobjects.com/zos/rmsportal/nxkuOJlFJuAUhzlMTCEe.png', // Webpack
-    ];
-
-    const getNotice = [
-      {
-        id: 'xxx1',
-        title: titles[0],
-        logo: avatars[0],
-        owner: user[0],
-        description: '那是一种内在的东西，他们到达不了，也无法触及的',
-        updatedAt: new Date(),
-        member: '科学搬砖组',
-        href: '',
-        memberLink: '',
-      },
-      {
-        id: 'xxx2',
-        title: titles[1],
-        logo: avatars[1],
-        owner: user[1],
-        description: '希望是一个好东西，也许是最好的，好东西是不会消亡的',
-        updatedAt: new Date('2017-07-24'),
-        member: '全组都是吴彦祖',
-        href: '',
-        memberLink: '',
-      },
-      {
-        id: 'xxx3',
-        title: titles[2],
-        logo: avatars[2],
-        owner: user[2],
-        description: '城镇中有那么多的酒馆，她却偏偏走进了我的酒馆',
-        updatedAt: new Date(),
-        member: '中二少女团',
-        href: '',
-        memberLink: '',
-      },
-      {
-        id: 'xxx4',
-        title: titles[3],
-        logo: avatars[3],
-        owner: user[3],
-        description: '那时候我只会想自己想要什么，从不想自己拥有什么',
-        updatedAt: new Date('2017-07-23'),
-        member: '程序员日常',
-        href: '',
-        memberLink: '',
-      },
-      {
-        id: 'xxx5',
-        title: titles[4],
-        logo: avatars[4],
-        owner: user[4],
-        description: '凛冬将至',
-        updatedAt: new Date('2017-07-23'),
-        member: '高逼格设计天团',
-        href: '',
-        memberLink: '',
-      },
-      {
-        id: 'xxx6',
-        title: titles[5],
-        logo: avatars[5],
-        owner: user[5],
-        description: '生命就像一盒巧克力，结果往往出人意料',
-        updatedAt: new Date('2017-07-23'),
-        member: '骗你来学计算机',
-        href: '',
-        memberLink: '',
-      },
+      'https://img.alicdn.com/imgextra/i4/928417138/TB2ViuQf80kpuFjy1zdXXXuUVXa_!!928417138.png_430x430q90.jpg', // Alipay
+      'https://img.alicdn.com/bao/uploaded/i2/1579924534/TB2eE03rohnpuFjSZFpXXcpuXXa_!!1579924534.jpg_b.jpg', // Angular
+      'https://img.alicdn.com/imgextra/i2/928417138/TB2R_tagHGYBuNjy0FoXXciBFXa_!!928417138.jpg_430x430q90.jpg', // Ant Design
     ];
 
     return (
-      <PageHeaderLayout title="品牌" content="平台所有品牌列表">
+      <PageHeaderLayout title="品牌/系列" content="平台所有品牌和系列列表">
         <div className={styles.standardList}>
           <Card className={styles.listCard}>
             <List
@@ -300,15 +192,17 @@ export default class BrandList extends Component {
               rowKey="id"
               loading={loading}
               pagination={paginationProps}
-              dataSource={getNotice}
+              dataSource={list}
               renderItem={item => (
-                <List.Item actions={[<a>详情</a>, <a>编辑</a>]}>
+                <List.Item actions={[
+                  <a href={`/#/brand/brand/${item.id}`}>详情</a>,
+                  <a href={`/#/brand/edit-brand/${item.id}`}>编辑</a>
+                ]}>
                   <List.Item.Meta
-                    avatar={<Avatar src={item.logo} shape="square" size="large" />}
-                    title={<a href={item.href}>{item.title}</a>}
-                    description={item.description}
+                    avatar={<Avatar src={item.brand_icon} shape="square" size="large" />}
+                    title={<a href={item.href}>{item.brand_name}</a>}
+                    description={item.slogan}
                   />
-                  <ListContent data={item} />
                 </List.Item>
               )}
             />

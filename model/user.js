@@ -52,14 +52,13 @@ User.prototype.getUserInfoById = function (id, callback) {
 };
 
 // 注册[C]
-Device.prototype.signUp = function (name, password, role, callback) {
+User.prototype.signUp = function (name, password, role, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
       callback(err);
     }
 
     connection.connect();
-    console.log('deviceTypeId: ' + deviceTypeId);
     var sql = 'INSERT INTO user (name, password, role) VALUES (?, ?, ?)';
     connection.query(sql, [name, password, role], function (error, results, fields) {
       if (error) {

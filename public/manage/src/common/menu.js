@@ -7,18 +7,19 @@ const menuData = [
     path: 'dashboard',
     children: [
       {
-        name: '分析页',
+        name: '品牌设备监控',
         path: 'analysis',
       },
       {
         name: '监控页',
         path: 'monitor',
+        hideInMenu: true,
       },
       {
         name: '工作台',
         path: 'workplace',
         // hideInBreadcrumb: true,
-        // hideInMenu: true,
+        hideInMenu: true,
       },
     ],
   },
@@ -100,12 +101,12 @@ const menuData = [
     ],
   },
   {
-    name: '品牌管理',
+    name: '品牌/系列管理',
     icon: 'heart-o',
     path: 'brand',
     children: [
       {
-        name: '品牌列表',
+        name: '品牌/系列列表',
         path: 'brand-list',
       },
       {

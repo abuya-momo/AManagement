@@ -42,16 +42,16 @@ const { Description } = DescriptionList;
 //   },
 // ];
 
-@connect(({ deviceType, loading }) => ({
-  deviceType,
-  loading: loading.effects['deviceType/fetchDeviceType'],
+@connect(({ brand, loading }) => ({
+  brand,
+  loading: brand.loading,
 }))
 export default class Brand extends Component {
   componentDidMount() {
     const { dispatch } = this.props;
     console.log('dispatch');
     dispatch({
-      type: 'deviceType/fetchDeviceType',
+      type: 'brand/fetchBrand',
       payload: this.props.match.params.id
     });
 
@@ -61,7 +61,7 @@ export default class Brand extends Component {
   }
 
   render() {
-    const { deviceType, loading } = this.props;
+    const { brand, loading } = this.props;
 
     // const { basicGoods, basicProgress } = profile;
     // let goodsData = [];
@@ -150,38 +150,38 @@ export default class Brand extends Component {
     //   },
     // ];
 
-    console.log(deviceType);
+    console.log(brand);
 
-    if (!deviceType.id) {
+    if (!brand.id) {
       console.log('deviceType == {}');
       return (
         <PageHeaderLayout title="品牌详情">
         </PageHeaderLayout>
       );
     } else {
-      console.log('deviceType');
+      console.log('brand');
       return (
-        <PageHeaderLayout title={`${deviceType.type_name}(${deviceType.model})`} content="设备类型详情">
+        <PageHeaderLayout title={`${brand.brand_name}`} content="品牌/系列详情">
           <Card bordered={false}>
             <DescriptionList size="large" title="品牌信息" style={{ marginBottom: 32 }}>
-              <Description term="品牌id">{deviceType.model}</Description>
-              <Description term="品牌名称">{deviceType.model}</Description>
+              <Description term="品牌id">{brand.id}</Description>
+              <Description term="品牌名称">{brand.brand_name}</Description>
             </DescriptionList>
             <Divider style={{ marginBottom: 32 }} />
             <DescriptionList size="large" title="Slogan" style={{ marginBottom: 32 }}>
-              <p>{deviceType.type_name}</p>
+              <p>{brand.slogan}</p>
             </DescriptionList>
             <Divider style={{ marginBottom: 32 }} />
             <DescriptionList size="large" title="品牌简介" style={{ marginBottom: 32 }}>
-              <p>{deviceType.type_profile}</p>
+              <p>{brand.brand_description}</p>
             </DescriptionList>
-
             <Divider style={{ marginBottom: 32 }} />
             <DescriptionList size="large" title="品牌图片" style={{ marginBottom: 32 }}>
+              <img src={brand.brand_icon} />
             </DescriptionList>
             <Divider style={{ marginBottom: 32 }} />
             <Button icon="form" type="primary" onClick={() => {
-              this.props.dispatch(routerRedux.push(`/device/edit-device-type/${deviceType.id}`));// 页面跳转
+              this.props.dispatch(routerRedux.push(`/brand/edit-brand/${brand.id}`));// 页面跳转
             }}>
               修改
             </Button>

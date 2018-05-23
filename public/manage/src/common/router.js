@@ -73,7 +73,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['user', 'login'], () => import('../layouts/BasicLayout')),
     },
     '/dashboard/analysis': {
-      component: dynamicWrapper(app, ['chart'], () => import('../routes/Dashboard/Analysis')),
+      component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Analysis')),
     },
     '/dashboard/monitor': {
       component: dynamicWrapper(app, ['monitor'], () => import('../routes/Dashboard/Monitor')),
@@ -202,24 +202,24 @@ export const getRouterData = app => {
 
     // manager管理员
     '/manager/manager-list': {
-      component: dynamicWrapper(app, ['manager'], () => import('../routes/Manager/ManagerList')),
+      component: dynamicWrapper(app, ['managerList', 'manager'], () => import('../routes/Manager/ManagerList')),
     },
     '/manager/add-manager': {
-      component: dynamicWrapper(app, ['manager'], () => import('../routes/Manager/AddManager')),
+      component: dynamicWrapper(app, ['manager', 'brandList'], () => import('../routes/Manager/AddManager')),
     },
 
     // brand品牌
     '/brand/brand-list': {
-      component: dynamicWrapper(app, ['deviceTypeList'], () => import('../routes/Brand/BrandList')),
+      component: dynamicWrapper(app, ['brandList'], () => import('../routes/Brand/BrandList')),
     },
     '/brand/brand/:id': {
-      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Brand/Brand')),
+      component: dynamicWrapper(app, ['brand'], () => import('../routes/Brand/Brand')),
     },
     '/brand/add-brand': {
-      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Brand/AddBrand')),
+      component: dynamicWrapper(app, ['brand'], () => import('../routes/Brand/AddBrand')),
     },
     '/brand/edit-brand/:id': {
-      component: dynamicWrapper(app, ['deviceType'], () => import('../routes/Brand/EditBrand')),
+      component: dynamicWrapper(app, ['brand'], () => import('../routes/Brand/EditBrand')),
     },
   };
   // Get name from ./menu.js or just set it in the router data.

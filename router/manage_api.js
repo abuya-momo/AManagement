@@ -1,6 +1,7 @@
 var deviceType = require('../controllerForManage/deviceType'),
     brand = require('../controllerForManage/brand'),
     device = require('../controllerForManage/device'),
+    monitor = require('../controllerForManage/monitor'),
     user = require('../controllerForManage/user');
     manager = require('../controllerForManage/manager');
 
@@ -30,15 +31,23 @@ module.exports = function (app) {
   // 路由-后台管理-品牌详情
   app.get('/manage/brand', brand.brand);
   // 路由-后台管理-添加品牌
-  app.post('/manage/add-brand', brand.add_brand);
+  app.post('/manage/add_brand', brand.add_brand);
   // 路由-后台管理-修改品牌
-  app.post('/manage/edit-brand', brand.edit_brand);
+  app.post('/manage/edit_brand', brand.edit_brand);
 
   // 路由-后台管理-管理员管理
   // 路由-后台管理-管理员列表
-  app.get('/manage/manager-list', manager.managers);
+  app.get('/manage/managers', manager.managers);
+  // 路由-后台管理-管理员详情
+  app.get('/manage/manager', manager.manager);
   // 路由-后台管理-分配管理员
-  app.get('/manage/add-manager', manager.add_manager);
+  app.post('/manage/add_manager', manager.add_manager);
   // 路由-后台管理-注销管理员
-  app.post('/manage/delete-manager', manager.delete_manager);
+  app.post('/manage/delete_manager', manager.delete_manager);
+
+  // 路由-后台管理-dashboard
+  // 路由-后台管理-设备当前信息查询
+  app.get('/manage/monitor', monitor.monitor);
+  // 路由-后台管理-品牌/系列设备日活查询
+  app.get('/manage/monitor_DAUs', monitor.monitor_DAUs);
 };

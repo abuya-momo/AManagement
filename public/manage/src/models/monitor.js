@@ -1,28 +1,80 @@
-import { queryTags } from '../services/api';
+import {
+  queryMonitor,
+  queryMonitorDAUs,
+} from '../services/monitor';
+import { message } from 'antd';
 
 export default {
   namespace: 'monitor',
 
   state: {
+    monitorState: [],
+    DAUList: [],
     tags: [],
+    loading: false,
   },
 
   effects: {
-    *fetchTags(_, { call, put }) {
-      const response = yield call(queryTags);
+    *fetchMonitorState({ payload }, { call, put }) {
+      console.log(payload);
       yield put({
-        type: 'saveTags',
-        payload: response.list,
+        type: 'loading',
+        payload: null,
       });
+      const response = yield call(queryMonitor, payload);
+      const monitorState = response.state;
+
+      yield put({
+        type: 'saveMonitorState',
+        payload: ((monitorState && Array.isArray(monitorState)) ? monitorState : []),
+      });
+      yield put({
+        type: 'loadFinish',
+        payload: null,
+      });
+      if (!monitorState || monitorState.length == 0) {
+        message.info('未找到相关信息');
+      }
+    },
+    *fetchDAUs({ payload }, { call, put }) {
+      const response = yield call(queryMonitorDAUs, payload);
+      let DAUs = response.DAUs;
+      yield put({
+        type: 'saveDAUs',
+        payload: ((DAUs && Array.isArray(DAUs)) ? DAUs : []),
+      });
+      return true;
     },
   },
 
   reducers: {
-    saveTags(state, action) {
+    saveMonitorState(state, action) {
       return {
         ...state,
-        tags: action.payload,
+        monitorState: [
+          ...action.payload,
+        ],
       };
+    },
+    saveDAUs(state, action) {
+      return {
+        ...state,
+        DAUList: [
+          ...action.payload,
+        ],
+      };
+    },
+    loading(state, action) {
+      return {
+        ...state,
+        loading: true,
+      }
+    },
+    loadFinish(state, action) {
+      return {
+        ...state,
+        loading: false,
+      }
     },
   },
 };

@@ -164,6 +164,7 @@ export default class DeviceType extends Component {
         <PageHeaderLayout title={`${deviceType.type_name}(${deviceType.model})`} content="设备类型详情">
           <Card bordered={false}>
             <DescriptionList size="large" title="型号信息" style={{ marginBottom: 32 }}>
+              <Description term="品牌/系列">{deviceType.brand}</Description>
               <Description term="型号(英文)">{deviceType.model}</Description>
               <Description term="型号(中文)">{deviceType.type_name}</Description>
               <Description term="型号编号">{deviceType.id}</Description>

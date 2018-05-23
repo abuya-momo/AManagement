@@ -15,7 +15,7 @@ Brand.prototype.getBrandList = function (callback) {
     }
 
     connection.connect();
-    connection.query('SELECT b FROM brand', null, function (error, results, fields) {
+    connection.query('SELECT * FROM brand', null, function (error, results, fields) {
       if (error) {
         callback(error);
         return;

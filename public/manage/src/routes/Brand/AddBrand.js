@@ -22,7 +22,7 @@ const FormItem = Form.Item;
 const { TextArea } = Input;
 
 @connect(({ loading }) => ({
-  submitting: loading.effects['deviceType/submitAddDeviceType'],// loading.effects是对应函数的返回值
+  submitting: loading.effects['brand/submitAddBrand'],// loading.effects是对应函数的返回值
 }))
 @Form.create() // 创建form对象到props
 export default class AddBrand extends PureComponent {
@@ -34,7 +34,7 @@ export default class AddBrand extends PureComponent {
       if (!err) {
         console.log('validateFieldsAndScroll dispatch');
         this.props.dispatch({
-          type: 'deviceType/submitAddDeviceType',
+          type: 'brand/submitAddBrand',
           payload: values,
         });
       }
@@ -71,7 +71,7 @@ export default class AddBrand extends PureComponent {
         <Card bordered={false}>
           <Form onSubmit={this.handleSubmit} hideRequiredMark style={{ marginTop: 8 }}>
             <FormItem {...formItemLayout} label="品牌名称">
-              {getFieldDecorator('model', {
+              {getFieldDecorator('brand_name', {
                 rules: [
                   {
                     required: true,
@@ -81,7 +81,7 @@ export default class AddBrand extends PureComponent {
               })(<Input placeholder="请输入品牌名称" />)}
             </FormItem>
             <FormItem {...formItemLayout} label="品牌Slogan">
-              {getFieldDecorator('type_name', {
+              {getFieldDecorator('slogan', {
                 rules: [
                   {
                     required: true,
@@ -95,7 +95,7 @@ export default class AddBrand extends PureComponent {
                 品牌简介<em className={styles.optional}>（选填）</em>
               </span>
             }>
-              {getFieldDecorator('type_profile', {
+              {getFieldDecorator('brand_description', {
                 rules: [
                   {
                     required: false,

@@ -16,7 +16,7 @@ Manager.prototype.getManagerList = function (callback) {
     }
 
     connection.connect();
-    connection.query('SELECT * FROM manager', null, function (error, results, fields) {
+    connection.query('SELECT m.*, u.name FROM manager AS m, user AS u WHERE m.user_id = u.id', null, function (error, results, fields) {
       if (error) {
         callback(error);
         return;
@@ -31,7 +31,7 @@ Manager.prototype.getManagerList = function (callback) {
   });
 }
 
-// 根据管理员id查询管理员详情，如果没有找到则返回-1[R]
+// 根据管理员id[注意不是userId]查询管理员详情，如果没有找到则返回-1[R]
 Manager.prototype.findManagerById = function (id, callback) {
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -40,27 +40,18 @@ Manager.prototype.findManagerById = function (id, callback) {
     }
 
     connection.connect();
-    connection.query('SELECT * FROM brand WHERE id = ?', id, function (error, results, fields) {
+    connection.query('SELECT m.*, u.name FROM manager AS m, user AS u WHERE m.user_id = u.id AND m.id = ?', id, function (error, results, fields) {
       if (error) {
         callback(error);
         return;
       }
 
-      if (results.length > 0) {
-        connection.query('SELECT state FROM device_type WHERE brand = ?', id, function (error, states, fields) {
-          if (error) {
-            callback(error);
-            return;
-          }
+      if (results && results.length > 0) {
+        var result = results[0];
 
-          var result = results[0];
-          result.states = states.map(function (item, index) {
-            return item.state;
-          });
-          callback(null, result);
+        callback(null, result);
 
-          connection.release();
-        });
+        connection.release();
       } else {
         callback(null, -1);
       }
