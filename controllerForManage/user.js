@@ -1,6 +1,29 @@
 var User = require('../model/user');
 var UserDevice = require('../model/userDevice');
 
+// 管理端登录
+module.exports.manage_login = function (req, res) {
+  var userId = req.body.userId,
+      password = req.body.password;
+
+  var user = new User();
+  user.manageLogin(userId, password, function (successMessage, authMessage) {
+    if (successMessage.success) {
+      res.json({
+        success: true,
+        message: "",
+        role: authMessage.role,
+        brand: authMessage.brand
+      });
+    } else {
+      res.json({
+        success: false,
+        message: successMessage.message
+      });
+    }
+  });
+}
+
 // 获取用户设备信息
 module.exports.user = function (req, res) {
   var param = req.query.param,

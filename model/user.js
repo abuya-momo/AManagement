@@ -9,6 +9,70 @@ function User(id, name, password, mi_id, role) {
   this.id = role ? role : null;
 }
 
+// 管理端登录 返回角色和brandId
+User.prototype.manageLogin = function (userId, password, callback) {
+  pool.getConnection(function (err, connection) {
+    connection.connect();
+    connection.query('SELECT password FROM user WHERE id = ?', [userId], function (error, results, fields) {
+      if (error) {
+        callback({
+          success: false,
+          message: error
+        });
+        return;
+      }
+
+      console.log(results);
+
+      if (results.length > 0) {
+        if (results[0]['password'] == password) {
+          connection.query('SELECT m.brand, u.role FROM user AS u, manager AS m WHERE u.id = ? AND u.id = m.id', userId, function (err, results, fields) {
+            if (err) {
+              callback({
+                success: false,
+                message: err
+              });
+              return;
+            }
+
+            if (results && results.length > 0) {
+              callback({
+                success: true,
+                message: ''
+              }, {
+                role: results[0]['role'],
+                brand: results[0]['brand']
+              });
+            } else {
+              callback({
+                success: false,
+                message: 'manager not exist'
+              });
+            }
+
+            connection.release();
+          });
+        } else {
+          callback({
+            success: false,
+            message: err
+          });
+        }
+
+      }
+      else {
+        console.log('wdfegsdrhf');
+        callback({
+          success: false,
+          message: 'password wrong'
+        });
+      }
+
+      connection.release();
+    });
+  });
+};
+
 // 根据mi_id获取用户id
 User.prototype.searchUserByMiID = function (mi_id, callback) {
   pool.getConnection(function (err, connection) {

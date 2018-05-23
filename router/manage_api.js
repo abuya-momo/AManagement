@@ -24,6 +24,8 @@ module.exports = function (app) {
   app.get('/manage/device', device.device);
   // 路由-后台管理-用户设备查询
   app.get('/manage/user', user.user);
+  // 路由-后台管理-登录
+  app.post('/manage/manage_login', user.manage_login);
 
   // 路由-后台管理-品牌
   // 路由-后台管理-品牌列表

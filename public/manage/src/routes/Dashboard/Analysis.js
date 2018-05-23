@@ -14,6 +14,7 @@ import {
   Dropdown,
 } from 'antd';
 import numeral from 'numeral';
+import moment from 'moment';
 import {
   ChartCard,
   yuan,
@@ -85,7 +86,7 @@ export default class Analysis extends Component {
       type: 'monitor/fetchDAUs',
       payload: {
         brandId: 6,
-        startDate: 1526918400,
+        startDate: 1526832000,
         lastDate: 1527004800,
       },
     });
@@ -151,6 +152,73 @@ export default class Analysis extends Component {
     console.log(DAUList);
 
     // 处理两个对象中的信息
+    // monitorState
+    let monitorStateDeviceType = {};
+    let monitorData = {
+      todayDAU: 0,
+      yesterdayDAU: 0,
+      DAUTrend: 0,
+      todayInitDevice: 0,
+      yesterdayInitDevice: 0,
+      initDeviceTrend: 0,
+
+      deviceTypeNumber: 0,
+      deviceTypeDeveloping: 0,
+      deviceTypeStartSell: 0,
+    };
+    const todayTime = Number(moment().startOf('day').format('X'));
+    const yesterdayTime = todayTime - 86400;
+
+    monitorState.forEach((item, index)=>{
+      if (!monitorStateDeviceType[item.device_type_id]) {
+        monitorStateDeviceType[item.device_type_id] = true;
+        monitorData['deviceTypeNumber'] += 1;
+
+        if (item.state == 61) {
+          monitorData['deviceTypeDeveloping'] += 1;
+        } else if (item.state == 63 || item.state == 64 || item.state == 65) {
+          monitorData['deviceTypeStartSell'] += 1;
+        }
+      }
+
+      if (item.date == todayTime) {
+        monitorData['todayDAU'] += item.active_user_number;
+        monitorData['todayInitDevice'] += item.inited_device_number;
+      } else if (item.date == yesterdayTime) {
+        monitorData['yesterdayDAU'] += item.active_user_number;
+        monitorData['yesterdayInitDevice'] += item.inited_device_number;
+      }
+    });
+
+    monitorData.DAUTrend = numeral((monitorData.todayDAU / monitorData.yesterdayDAU - 1)*100).format('0.0')
+    monitorData.initDeviceTrend = numeral((monitorData.todayInitDevice / monitorData.yesterdayInitDevice - 1)*100).format('0.0')
+
+    console.log(monitorData);
+
+    // DAUList
+    let DAUChart = [];
+    let DAUDate = {};
+    DAUList.forEach((item, index)=>{
+      if (!DAUDate[item.date]) {
+        DAUDate[item.date] = {
+          x: `${moment((item.date + 1) * 1000).format('MM-DD')}`,
+          y: item.active_user_number,
+          date: item.date,
+        }
+      } else {
+        DAUDate[item.date].y += item.active_user_number;
+      }
+    });
+
+    DAUChart = Object.keys(DAUDate).map((item)=>{
+      return DAUDate[item];
+    });
+
+    DAUChart.sort((a, b)=>{
+      return a.date > b.date;
+    });
+
+    console.log(DAUChart);
 
     const { rangePickerValue, salesType, currentTabKey } = this.state;
     const { chart, loading } = this.props;
@@ -202,11 +270,29 @@ export default class Analysis extends Component {
       description: 'Dickies-轻盈系列，不走寻常路。',
     }
 
+    // <Col xl={8} lg={12} md={12} sm={24} xs={24}>
+    //   <div className={styles.salesRank}>
+    //     <h4 className={styles.rankingTitle}>活跃型号排名</h4>
+    //     <ul className={styles.rankingList}>
+    //       {rankingListData.map((item, i) => (
+    //         <li key={item.title}>
+    //           <span className={i < 3 ? styles.active : ''}>{i + 1}</span>
+    //           <span>{item.title}</span>
+    //           <span>{numeral(item.total).format('0,0')}</span>
+    //         </li>
+    //       ))}
+    //     </ul>
+    //   </div>
+    // </Col>
+
     return (
       <Fragment>
         <Row gutter={24}>
           <Col {...topColResponsiveProps}>
-            <Card hoverable className={style.card} actions={[<a>品牌/系列详情</a>, <a>型号一览</a>]}>
+            <Card hoverable className={style.card} actions={[
+              <a href={`/#/brand/brand/${6}`}>品牌/系列详情</a>,
+              <a href={`/#/device-type/device-type-list`}>型号一览</a>
+            ]}>
               <Card.Meta
                 avatar={<img alt="" className={style.cardAvatar} src={item.avatar} />}
                 title={<a href="#">{item.title}</a>}
@@ -221,48 +307,50 @@ export default class Analysis extends Component {
           <Col {...topColResponsiveProps}>
             <ChartCard
               bordered={false}
-              title="当前日活"
-              total={() => numeral(16560).format('0,0') + '部'}
-              footer={<Field label="昨日活跃设备" value={`${numeral(12423).format('0,0')}`} />}
+              title="当前日活跃设备"
+              total={() => numeral(monitorData.todayDAU).format('0,0') + '部'}
+              footer={<Field label="昨日活跃设备" value={`${numeral(monitorData.yesterdayDAU).format('0,0')}`} />}
               contentHeight={46}
             >
-              <Trend flag="up" style={{ marginRight: 16 }}>
-                比昨天<span className={styles.trendText}>12%</span>
-              </Trend>
-              <Trend flag="down">
-                比上周<span className={styles.trendText}>11%</span>
-              </Trend>
+              {
+                monitorData.todayDAU >= monitorData.yesterdayDAU ? (<Trend flag="up" style={{ marginRight: 16 }}>
+                  比昨天<span className={styles.trendText}>{monitorData.DAUTrend}%</span>
+                </Trend>) : (<Trend flag="down">
+                  比昨天<span className={styles.trendText}>{monitorData.DAUTrend}%</span>
+                </Trend>)
+              }
             </ChartCard>
           </Col>
           <Col {...topColResponsiveProps}>
             <ChartCard
               bordered={false}
-              title="入网设备总数"
-              total={numeral(30182).format('0,0') + '部'}
+              title="今日入网设备数"
+              total={numeral(monitorData.todayInitDevice).format('0,0') + '部'}
               footer={
                 <div style={{ whiteSpace: 'nowrap', overflow: 'hidden' }}>
-                  <Trend flag="up" style={{ marginRight: 16 }}>
-                    周同比<span className={styles.trendText}>10%</span>
-                  </Trend>
-                  <Trend flag="down">
-                    日环比<span className={styles.trendText}>5%</span>
-                  </Trend>
+                  {
+                    monitorData.todayInitDevice >= monitorData.yesterdayInitDevice ? (<Trend flag="up" style={{ marginRight: 16 }}>
+                      比昨天<span className={styles.trendText}>{monitorData.initDeviceTrend}%</span>
+                    </Trend>) : (<Trend flag="down">
+                      比昨天<span className={styles.trendText}>{monitorData.initDeviceTrend}%</span>
+                    </Trend>)
+                  }
                 </div>
               }
               contentHeight={46}
             >
-              <Field label="今日入网数" value="12部" />
+              <Field label="昨日入网数" value={`${monitorData.yesterdayInitDevice}部`} />
             </ChartCard>
           </Col>
           <Col {...topColResponsiveProps}>
             <ChartCard
               bordered={false}
               title="设备类型共计"
-              total={numeral(9).format('0,0') + '个'}
-              footer={<Field label="研发中" value="3个" />}
+              total={numeral(monitorData.deviceTypeNumber).format('0,0') + '个'}
+              footer={<Field label="研发中" value={`${monitorData.deviceTypeDeveloping}个`} />}
               contentHeight={46}
             >
-              <Field label="已上市型号" value="6个" />
+              <Field label="已上市型号" value={`${monitorData.deviceTypeStartSell}个`} />
             </ChartCard>
           </Col>
         </Row>
@@ -270,25 +358,11 @@ export default class Analysis extends Component {
         <Card loading={loading} bordered={false} bodyStyle={{ padding: 0 }}>
           <div className={styles.salesCard}>
             <Tabs tabBarExtraContent={salesExtra} size="large" tabBarStyle={{ marginBottom: 24 }}>
-              <TabPane tab="活跃设备" key="sales">
+              <TabPane tab="品牌日活跃设备趋势" key="sales">
                 <Row>
-                  <Col xl={16} lg={12} md={12} sm={24} xs={24}>
+                  <Col >
                     <div className={styles.salesBar}>
-                      <Bar height={295} title="品牌日活跃趋势" data={salesData} />
-                    </div>
-                  </Col>
-                  <Col xl={8} lg={12} md={12} sm={24} xs={24}>
-                    <div className={styles.salesRank}>
-                      <h4 className={styles.rankingTitle}>活跃型号排名</h4>
-                      <ul className={styles.rankingList}>
-                        {rankingListData.map((item, i) => (
-                          <li key={item.title}>
-                            <span className={i < 3 ? styles.active : ''}>{i + 1}</span>
-                            <span>{item.title}</span>
-                            <span>{numeral(item.total).format('0,0')}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      <Bar height={295} title="" data={DAUChart} />
                     </div>
                   </Col>
                 </Row>

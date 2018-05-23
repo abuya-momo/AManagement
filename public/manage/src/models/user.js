@@ -10,6 +10,8 @@ export default {
       avatar: 'https://gw.alipayobjects.com/zos/rmsportal/BiazfanxmamNRoxxVxka.png',
       userid: '00000001',
       notifyCount: 12,
+
+      brand: 6,
     },
   },
 
