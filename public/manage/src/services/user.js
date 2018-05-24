@@ -7,3 +7,11 @@ export async function query() {
 export async function queryCurrent() {
   return request('/api/currentUser');
 }
+
+export async function manageLogin(params) {
+  console.log('manageLogin');
+  return request('/manage/manage_login', {
+    method: 'POST',
+    body: params,
+  });
+}

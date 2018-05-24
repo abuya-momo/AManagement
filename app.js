@@ -2,10 +2,6 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 
-// var multer = require('multer');
-// var upload = multer({ dest: 'uploads/' });
-// var upload = multer();
-
 var router_manage = require('./router/manage_api');
 var router_app_api = require('./router/app_api');
 
@@ -24,9 +20,6 @@ app.use(function (req, res, next) {
   next();
 });
 
-app.get('/', function (req, res) {
-  res.send('Hello World2333!hhh');
-});
 router_manage(app);
 router_app_api(app);
 

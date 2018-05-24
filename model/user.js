@@ -26,7 +26,7 @@ User.prototype.manageLogin = function (userId, password, callback) {
 
       if (results.length > 0) {
         if (results[0]['password'] == password) {
-          connection.query('SELECT m.brand, u.role FROM user AS u, manager AS m WHERE u.id = ? AND u.id = m.id', userId, function (err, results, fields) {
+          connection.query('SELECT m.brand, u.role, u.name FROM user AS u, manager AS m WHERE u.id = ? AND u.id = m.id', userId, function (err, results, fields) {
             if (err) {
               callback({
                 success: false,
@@ -41,7 +41,9 @@ User.prototype.manageLogin = function (userId, password, callback) {
                 message: ''
               }, {
                 role: results[0]['role'],
-                brand: results[0]['brand']
+                brand: results[0]['brand'],
+                name: results[0]['name'],
+                id: userId
               });
             } else {
               callback({
@@ -49,8 +51,6 @@ User.prototype.manageLogin = function (userId, password, callback) {
                 message: 'manager not exist'
               });
             }
-
-            connection.release();
           });
         } else {
           callback({
@@ -58,7 +58,6 @@ User.prototype.manageLogin = function (userId, password, callback) {
             message: err
           });
         }
-
       }
       else {
         console.log('wdfegsdrhf');

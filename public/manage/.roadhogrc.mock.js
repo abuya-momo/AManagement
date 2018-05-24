@@ -144,5 +144,6 @@ export default {
   'POST /manage/(.*)': 'http://localhost:3001/manage',
   'GET /app_api/(.*)': 'http://localhost:3001/app_api',
   'POST /app_api/(.*)': 'http://localhost:3001/app_api',
+  'POST /file_upload/(.*)': 'http://localhost:3008/',
   'GET /api/(.*)': delay(proxy, 1000),
 };

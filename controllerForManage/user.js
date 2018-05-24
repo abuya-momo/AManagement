@@ -13,7 +13,9 @@ module.exports.manage_login = function (req, res) {
         success: true,
         message: "",
         role: authMessage.role,
-        brand: authMessage.brand
+        brand: authMessage.brand,
+        id: authMessage.id,
+        name: authMessage.name
       });
     } else {
       res.json({

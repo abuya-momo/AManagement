@@ -5,6 +5,7 @@ const menuData = [
     name: '主页',
     icon: 'dashboard',
     path: 'dashboard',
+    authority: ['super_admin', 'admin'],
     children: [
       {
         name: '品牌设备监控',
@@ -87,7 +88,7 @@ const menuData = [
     icon: 'profile',
     path: 'profile',
     hideInMenu: true,
-    authority: 'admin',
+    authority: '13',
     children: [
       {
         name: '基础详情页',
@@ -104,6 +105,7 @@ const menuData = [
     name: '品牌/系列管理',
     icon: 'heart-o',
     path: 'brand',
+    authority: 'super_admin',
     children: [
       {
         name: '品牌/系列列表',
@@ -119,6 +121,7 @@ const menuData = [
     name: '设备类型管理',
     icon: 'calculator',
     path: 'device-type',
+    authority: ['admin', 'super_admin'],
     children: [
       {
         name: '设备类型列表',
@@ -134,6 +137,7 @@ const menuData = [
     name: '用户设备管理',
     icon: 'solution',
     path: 'device-user',
+    authority: ['admin', 'super_admin'],
     children: [
       {
         name: '设备信息查询',
@@ -165,6 +169,7 @@ const menuData = [
     name: '管理员管理',
     icon: 'user',
     path: 'manager',
+    authority: 'super_admin',
     children: [
       {
         name: '管理员列表',

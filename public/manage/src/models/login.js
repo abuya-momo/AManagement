@@ -1,5 +1,6 @@
 import { routerRedux } from 'dva/router';
-import { fakeAccountLogin } from '../services/api';
+import { message } from 'antd';
+import { manageLogin } from '../services/user';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
@@ -12,15 +13,47 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      let response = yield call(manageLogin, payload);
+      if (response.success == true) {
+        response.status = 'ok';
+        if (response.role == '13') {
+          response.role = 'super_admin';
+        } else if (response.role == '12') {
+          response.role = 'admin';
+        } else {
+          console.log('error');
+          response.status = 'error';
+        }
+      } else {
+        console.log('error');
+        response.status = 'error';
+      }
+
+      console.log(response);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
+
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.success == true) {
         reloadAuthorized();
-        yield put(routerRedux.push('/'));
+
+        yield put({
+          type: 'user/saveCurrentUser',
+          payload: {
+            id: response.id,
+            name: response.name,
+            brand: response.brand,
+          },
+        });
+
+        console.log(routerRedux);
+        console.log(routerRedux);
+        yield put(routerRedux.push('/#/'));
+
+      } else {
+        message.error('密码错误');
       }
     },
     *logout(_, { put, select }) {
@@ -47,7 +80,7 @@ export default {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      setAuthority(payload.role);
       return {
         ...state,
         status: payload.status,
